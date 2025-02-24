@@ -5,7 +5,7 @@ When working on a project with multiple people a good way to organize the clutte
 Each branch name should contain:
 - Story Number (If Applicable)
 - Issue Number
-- A passive description of the work (camelCase)
+- A passive description of the work (uppercase first letters)
 
 ## Examples
 ### Issue w/ Story
