@@ -1,5 +1,9 @@
+/* Poppins Font from Figma */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif; 
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,6 +15,16 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Defining Team Colors */
+  --primary-color:             #5089D8;
+  --primary-color-light:       #B1D1EE;
+  --secondary-color:           #39D869;
+  --secondary-color-light:     #94ECAF;
+  --background-dark:           #292929;
+  --background-secondary-dark: #424242;
+  --background-light:          #FFFFFF;
+  --background-secondary-light:#DDDDDD;
 }
 
 a {
@@ -25,7 +39,6 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
