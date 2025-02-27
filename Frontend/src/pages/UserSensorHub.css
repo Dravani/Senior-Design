@@ -1,3 +1,9 @@
 h1 {
-    color: var(--primary-color);
+    font-size: 4em;
+    color: var(--background-light);
+}
+
+h2 {
+    font-size: 2.5em;
+    size: 100px;
 }

@@ -1,5 +1,9 @@
+/* Poppins Font from Figma */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif; 
   line-height: 1.5;
   font-weight: 400;
 
@@ -19,7 +23,8 @@
   --secondary-color-light:     #94ECAF;
   --background-dark:           #292929;
   --background-secondary-dark: #424242;
-  
+  --background-light:          #FFFFFF;
+  --background-secondary-light:#DDDDDD;
 }
 
 a {
