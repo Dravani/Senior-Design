@@ -1,3 +1,8 @@
+.user-sensor-hub {
+    width: 100vw;
+    overflow-x: hidden;
+}
+
 .dash-title {
     margin-top: 7.5em;
     margin-left: 2em;
@@ -17,4 +22,15 @@ h2 {
 
 .underline {
     border-bottom: 8px solid var(--secondary-color-light);
+}
+
+table {
+    text-align: left;
+    margin: 1em auto;
+    width: 98%; 
+    border: solid red 2px;
+}
+
+tr {
+    font-size: 2em;
 }
