@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Router } from 'react-router-dom';
 
 // pages
 import UserSensorHub from './pages/UserSensorHub'
+import UserProjectHub from './pages/UserProjectHub';
 
 function App() {
   return (
@@ -11,6 +12,10 @@ function App() {
         <Route
           path="/sensors"
           element={<UserSensorHub/>}
+        />
+        <Route
+          path="/projects"
+          element={<UserProjectHub/>}
         />
       </Routes>
     </BrowserRouter>
