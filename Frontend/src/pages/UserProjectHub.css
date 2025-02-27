@@ -4,7 +4,7 @@
 }
 
 .user-project-hub .dash-title {
-    margin-top: 14.5em;
+    margin-top: 10vh;
 }
 
 .project-cards {
@@ -14,8 +14,8 @@
 
 .card {
     background-color: var(--background-secondary-dark);
-    width: 35em; 
-    height: 25em;
+    width: 400px; 
+    height: 250px;
     border-radius: 25px;
     margin: 4em;
 

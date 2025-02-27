@@ -7,6 +7,7 @@ const UserProjectHub = () => {
     return (
         <div className="user-project-hub">
             <div className="dash-title">
+                <h1>Welcome, User!</h1>
                 <h2><span className="underline">Projects</span></h2>
             </div>
             <div className="project-cards">
