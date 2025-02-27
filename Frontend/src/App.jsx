@@ -2,15 +2,17 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Router } from 'react-router-dom';
 
 // pages
-import UserSensorHub from './pages/UserSensorHub'
+//import UserSensorHub from './pages/UserSensorHub'
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route
-          path="/sensors"
-          element={<UserSensorHub/>}
+          path="/"
+          element={<SignUp/>}
         />
       </Routes>
     </BrowserRouter>
