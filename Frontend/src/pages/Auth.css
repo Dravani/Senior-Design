@@ -1,0 +1,128 @@
+/* Auth.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-dark);
+    font-family: 'Poppins', sans-serif;
+    color: var(--background-light);
+  }
+  
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .auth-box {
+    background: var(--background-secondary-dark);
+    padding: 50px 40px; /* Increased vertical padding */
+    border-radius: 50px; /* More rounded corners */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    width: 380px; /* Slightly wider for balance */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  h2 {
+    font-size: 45px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: var(--background-light);
+  }
+  
+  label {
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 12px 0 5px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .EmailInput {
+    width: 100%;
+    max-width: 350px; /* Ensures consistent width */
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--primary-color-light);
+    background-color: var(--background-secondary-dark);
+    color: var(--background-light);
+    outline: none;
+    font-size: 14px;
+    text-align: left;
+  }
+  .PassInput {
+    width: 100%;
+    max-width: 350px; /* Ensures consistent width */
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--primary-color-light);
+    background-color: var(--background-secondary-dark);
+    color: var(--background-light);
+    outline: none;
+    font-size: 14px;
+    text-align: left;
+    
+  }
+  .SignUpPass{
+    width: 100%;
+    max-width: 350px; /* Ensures consistent width */
+    padding: 12px;
+    margin-bottom: 50px;
+    border-radius: 12px;
+    border: 1px solid var(--primary-color-light);
+    background-color: var(--background-secondary-dark);
+    color: var(--background-light);
+    outline: none;
+    font-size: 14px;
+    text-align: left;
+  }
+  
+  input::placeholder {
+    color: var(--background-secondary-light);
+  }
+  
+  .auth-button {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: var(--background-light);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  
+  .auth-button:hover {
+    background-color: var(--primary-color-light);
+  }
+  
+  p {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  a {
+    color: var(--background-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  a:hover {
+    color: var(--primary-color-light);
+  }
+  
