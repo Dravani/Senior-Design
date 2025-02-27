@@ -5,9 +5,9 @@ import './UserSensorHub.css'
 
 const UserSensorHub = () => {
     return (
-        <div>
-            <h1>Welcome, User</h1>
-            <h2>Active Sensors</h2>
+        <div className="dash-title">
+            <h1>Welcome, User!</h1>
+            <h2><span className="underline">Active Sensors</span></h2>
         </div>
     );
 }
