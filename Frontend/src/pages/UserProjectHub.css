@@ -1,0 +1,8 @@
+.user-project-hub {
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+.user-project-hub .dash-title {
+    margin-top: 14.5em;
+}
