@@ -31,6 +31,10 @@ function App() {
           path="/sensors"
           element={<UserSensorHub/>}
         />
+        <Route
+          path="/projects"
+          element={<UserProjectHub/>}
+        />
       </Routes>
     </BrowserRouter>
   );
