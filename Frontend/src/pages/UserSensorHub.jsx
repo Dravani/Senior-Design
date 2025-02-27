@@ -12,11 +12,20 @@ const UserSensorHub = () => {
             </div>
             <div className="sensor-table">
                 <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Duration</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>  
+                    <tbody>
+                        <tr>
+                            <td>Test</td>
+                            <td>Active</td>
+                            <td>0s</td>
+                        </tr>
+                    </tbody>                  
                 </table>
             </div>
         </div>
