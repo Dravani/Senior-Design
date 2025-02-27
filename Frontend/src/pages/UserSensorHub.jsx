@@ -1,5 +1,8 @@
 import React from "react";
 
+// CSS Stylings
+import './UserSensorHub.css'
+
 const UserSensorHub = () => {
     return (
         <div>
