@@ -10,23 +10,23 @@
 }
 
 h1 {
-    font-size: 4em;
+    font-size: 2em;
     font-weight: 600;
     color: var(--background-light);
 }
 
 h2 {
-    font-size: 3em;
+    font-size: 1.5em;
     font-weight: 600; 
 }
 
 .underline {
-    border-bottom: 8px solid var(--secondary-color-light);
+    border-bottom: 4px solid var(--secondary-color-light);
 }
 
 table {
     text-align: left;
-    margin: 1em auto;
+    margin: auto;
     width: 98%; 
 }
 
@@ -36,7 +36,7 @@ th {
 }
 
 tr {
-    font-size: 2em;
+    font-size: 1em;
 }
 
 th:nth-child(1), td:nth-child(1){
