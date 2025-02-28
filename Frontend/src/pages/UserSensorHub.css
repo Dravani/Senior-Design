@@ -4,7 +4,7 @@
 }
 
 .dash-title {
-    margin-top: 7.5em;
+    margin-top: 10vh;
     margin-left: 2em;
     font-weight: normal;
 }
@@ -28,9 +28,17 @@ table {
     text-align: left;
     margin: 1em auto;
     width: 98%; 
-    border: solid red 2px;
+}
+
+th {
+    font-weight: 500;
+    border-bottom: 2px solid var(--background-secondary-dark);
 }
 
 tr {
     font-size: 2em;
+}
+
+th:nth-child(1), td:nth-child(1){
+    width: 75%;
 }
