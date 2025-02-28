@@ -28,7 +28,7 @@ body {
   align-items: center;
 }
 
-h2 {
+h2 .auth-box {
   font-size: 1em;
   margin: 20px 50px; 
   font-weight: 600;
