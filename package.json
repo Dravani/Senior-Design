@@ -1,0 +1,13 @@
+{
+  "name": "senior-design",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "response-time": "^2.3.3"
+  }
+}
