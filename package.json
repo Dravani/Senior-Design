@@ -6,8 +6,5 @@
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
-  },
-  "dependencies": {
-    "response-time": "^2.3.3"
   }
 }
