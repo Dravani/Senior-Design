@@ -18,19 +18,19 @@ body {
 
 .auth-box {
   background: var(--background-secondary-dark);
-  padding: 50px 40px; /* Increased vertical padding */
   border-radius: 50px; /* More rounded corners */
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
   text-align: center;
   width: 380px; /* Slightly wider for balance */
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-h2 {
-  font-size: 45px;
-  margin-bottom: 30px;
+h2 .auth-box {
+  font-size: 1em;
+  margin: 20px 50px; 
   font-weight: 600;
   color: var(--background-light);
 }
@@ -39,13 +39,15 @@ label {
   display: block;
   text-align: left;
   width: 100%;
-  margin: 12px 0 5px;
+  padding: 0px 20px;
+  margin-left: 40px;
   font-weight: 500;
   font-size: 14px;
 }
 
+
 .EmailInput {
-  width: 100%;
+  width: 85%;
   max-width: 350px; /* Ensures consistent width */
   padding: 12px;
   margin-bottom: 15px;
@@ -58,7 +60,7 @@ label {
   text-align: left;
 }
 .PassInput {
-  width: 100%;
+  width: 85%;
   max-width: 350px; /* Ensures consistent width */
   padding: 12px;
   border-radius: 12px;
@@ -71,7 +73,7 @@ label {
   
 }
 .SignUpPass{
-  width: 100%;
+  width: 85%;
   max-width: 350px; /* Ensures consistent width */
   padding: 12px;
   margin-bottom: 50px;
@@ -101,6 +103,7 @@ input::placeholder {
   font-size: 16px;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  margin-bottom: 30px;
 }
 
 .auth-button:hover {
