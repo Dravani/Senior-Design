@@ -23,6 +23,7 @@ const Layout = () => {
           <Route path="/" element={<Login />} />
           <Route path="/projects" element={<UserProjectHub />} />
           <Route path="/sensors" element={<UserSensorHub />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>
