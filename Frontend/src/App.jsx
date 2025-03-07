@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Pages
 import Login from './pages/Login';
@@ -7,23 +7,20 @@ import SignUp from './pages/SignUp';
 import UserSensorHub from './pages/UserSensorHub';
 import UserProjectHub from './pages/UserProjectHub';
 import NavBar from "./components/NavBar";
+import { Outlet } from 'react-router-dom';
 
-const Layout = () => {
-  const location = useLocation();
-
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup" ||  location.pathname === "/";
-
+// Layout Component for Protected Pages
+const DashboardLayout = () => {
   return (
-    <div style={{ display: "flex" }}>
-      {!isAuthPage && <NavBar />} 
-      <div style={{ marginLeft: isAuthPage ? "0" : "100px", width: "100%" }}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<Login />} />
-          <Route path="/projects" element={<UserProjectHub />} />
-          <Route path="/sensors" element={<UserSensorHub />} />
-        </Routes>
+    <div style={{ display: "flex", width: "100vw", height: "100vh", overflowX: "hidden" }}>
+      <NavBar />
+      <div style={{
+        flex: 1,
+        paddingLeft: "100px",
+        boxSizing: "border-box",
+        overflowX: "hidden"
+      }}>
+        <Outlet /> {/* Renders the matching route inside this layout */}
       </div>
     </div>
   );
@@ -32,7 +29,18 @@ const Layout = () => {
 function App() {
   return (
     <BrowserRouter>
-      <Layout />
+      <Routes>
+        {/* Auth Pages (No NavBar) */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        {/* Protected Routes (With NavBar) */}
+        <Route path="/" element={<DashboardLayout />}>
+          <Route index element={<UserProjectHub />} /> {/* Default route */}
+          <Route path="projects" element={<UserProjectHub />} />
+          <Route path="sensors" element={<UserSensorHub />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }

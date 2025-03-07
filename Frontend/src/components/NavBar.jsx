@@ -1,22 +1,27 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FaSignOutAlt, FaHome, FaChartBar, FaCog, FaPlus } from "react-icons/fa";
 import "./NavBar.css";
 
 const NavBar = () => {
   return (
     <div className="NavBar">
+      {/* Profile Section */}
       <div className="profile-section">
         <img src="https://via.placeholder.com/80" alt="Profile" className="profile-pic" />
-        <button className="logout-btn">
-          Logout <FaSignOutAlt />
-        </button>
+        <Link to="/login" className="logout-link">
+          <button className="logout-btn">
+            Logout <FaSignOutAlt />
+          </button>
+        </Link>
       </div>
 
+      {/* Navigation Items */}
       <div className="nav-items">
-        <FaHome className="nav-icon" />
-        <FaPlus className="nav-icon" />
-        <FaChartBar className="nav-icon" />
-        <FaCog className="nav-icon" />
+        <Link to="/projects" className="nav-link"><FaHome className="nav-icon" title="Projects" /></Link>
+        <Link to="/sensors" className="nav-link"><FaPlus className="nav-icon" title="Sensors" /></Link>
+        <Link to="/analytics" className="nav-link"><FaChartBar className="nav-icon" title="Analytics" /></Link>
+        <Link to="/settings" className="nav-link"><FaCog className="nav-icon" title="Settings" /></Link>
       </div>
     </div>
   );
