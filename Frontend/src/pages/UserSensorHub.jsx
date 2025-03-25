@@ -3,7 +3,15 @@ import React from "react";
 // CSS Stylings
 import './UserSensorHub.css'
 
+// WILL EVENTUALLY MOVE TO READINGS PAGE 
 const UserSensorHub = () => {
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('Received from backend: ', message);
+    }
+
     return (
         <div className="user-sensor-hub">
             <div className="dash-title">
