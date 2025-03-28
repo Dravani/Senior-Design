@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // CSS Stylings
 import './UserSensorHub.css'
@@ -23,7 +24,6 @@ const UserSensorHub = () => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const json = await response.json();
-                console.log(json[2].sensor_name)
 
                 // Ensure sensor name is unique and not null
                 const uniqueSensors = new Set();
@@ -37,7 +37,6 @@ const UserSensorHub = () => {
                 });
                 
                 setSensors(uniqueSensors);
-                console.log(sensors)
             } catch (error) {
                 console.error('Failed to fetch sensors:', error);
             }
@@ -65,7 +64,11 @@ const UserSensorHub = () => {
                         {sensors.size > 0 ? (
                             [...sensors].map((sensorName, index) => (
                                 <tr key={index}>
-                                    <td>{sensorName}</td>
+                                    <td>
+                                        <Link to={`/readings/${encodeURIComponent(sensorName)}`} className="sensor-link">
+                                            {sensorName}
+                                        </Link>
+                                    </td>
                                     <td>Active</td>
                                     <td>N/A</td>
                                 </tr>

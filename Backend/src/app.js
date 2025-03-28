@@ -1,13 +1,19 @@
 import express from 'express';
 import * as middleware from './utils/middleware.js';
-import { createClient } from '@supabase/supabase-js';
 import sensorRoutes from './routes/sensorRoutes.js';
 import cors from 'cors';
+import http from 'http';
+import { WebSocketServer } from 'ws';
+import setupWebSocket from './sockets/sensorSocket.cjs';
 
 // Initialize Supabase client
 // const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 const app = express();
+const server = http.createServer(app);
+
+// Create WebSocket server and attach it to the HTTP server
+const wsServer = new WebSocketServer({ port: 8080 });
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
@@ -24,5 +30,7 @@ app.use('/api/sensors', sensorRoutes);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
+
+setupWebSocket(wsServer);
 
 export default app;
