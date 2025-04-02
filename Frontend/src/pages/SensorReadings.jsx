@@ -91,28 +91,31 @@ const SensorReadings = () => {
                     <p className="measure"><strong>Humidity:</strong> {reading.humidity}% RH</p>
                 </div>
             ) : (
-                <p>Waiting for updates...</p>
+                <div className="curr-readings">
+                    <p>Waiting for updates...</p>
+                </div>
             )}
 
             <div className="navigation-buttons">
                 {currentIndex > 0 && <button onClick={handlePrevious}>Previous Sensor</button>}
                 {currentIndex < selectedSensors.length - 1 && <button onClick={handleNext}>Next Sensor</button>}
             </div>
-
-            <div className="sensor-list">
-                <h3>Current Sensors:</h3>
-                <ul>
-                {selectedSensors
-                    .filter(sensor => sensor !== sensor_name)
-                    .map((sensor, index) => (
-                      <li key={index}>
-                        <Link to={`/readings/${encodeURIComponent(sensor)}`}>
-                          {sensor}
-                        </Link>
-                      </li>
-                  ))}
-                </ul>
-            </div>
+            { selectedSensors.length > 1 && (
+              <div className="sensor-list">
+                  <h3>Current Sensors:</h3>
+                  <ul>
+                  {selectedSensors
+                      .filter(sensor => sensor !== sensor_name)
+                      .map((sensor, index) => (
+                        <li key={index}>
+                          <Link to={`/readings/${encodeURIComponent(sensor)}`}>
+                            {sensor}
+                          </Link>
+                        </li>
+                    ))}
+                  </ul>
+              </div>
+            )}
         </div>
     );
 };
