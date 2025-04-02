@@ -15,6 +15,11 @@ const UserSensorHub = () => {
 
     const [sensors, setSensors] =  useState(new Set());
 
+    // Local Storage for sensors so we can navigate through multiple on the sensors page
+    const [selectedSensors, setSelectedSensors] = useState(() => {
+        return new Set(JSON.parse(localStorage.getItem("selectedSensors")) || [])
+    })
+
     // Temporary Function to Grab Whatever Sensors Exist
     useEffect(() => {
         const fetchSensors = async () => {
@@ -45,6 +50,16 @@ const UserSensorHub = () => {
         fetchSensors();
     }, []);
 
+    const handleSensorClick = (sensorName) => {
+        if (!selectedSensors.has(sensorName)) {
+            const updatedSensors = new Set(selectedSensors);
+            updatedSensors.add(sensorName);
+
+            setSelectedSensors(updatedSensors);
+            localStorage.setItem("selectedSensors", JSON.stringify([...updatedSensors]));
+        }
+    };
+
     return (
         <div className="user-sensor-hub">
             <div className="dash-title">
@@ -65,7 +80,7 @@ const UserSensorHub = () => {
                             [...sensors].map((sensorName, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <Link to={`/readings/${encodeURIComponent(sensorName)}`} className="sensor-link">
+                                        <Link to={`/readings/${encodeURIComponent(sensorName)}`} className="sensor-link" onClick={() => handleSensorClick(sensorName)}>
                                             {sensorName}
                                         </Link>
                                     </td>
