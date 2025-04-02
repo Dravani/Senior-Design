@@ -19,6 +19,7 @@ const setupWebSocket = (wsServer) => {
           .from("Sensor")
           .select("*")
           .eq("sensor_name", sensorName)
+          .order("timestamp", { ascending: false })
           .limit(1)
           .single();
 
@@ -35,8 +36,8 @@ const setupWebSocket = (wsServer) => {
       }
     };
 
-    // Send the latest reading every 3 seconds
-    const interval = setInterval(sendLatestReading, 3000);
+    // Send the latest reading every 2 seconds
+    const interval = setInterval(sendLatestReading, 2000);
 
     // Cleanup when the WebSocket is closed
     ws.on("close", () => {

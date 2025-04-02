@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 // CSS Stylings
@@ -7,13 +7,14 @@ import './SensorReadings.css'
 const SensorReadings = () => {
   const { sensor_name } = useParams(); 
   const [reading, setReading] = useState(null);
-  const [ws, setWs] = useState(null);
+  const wsRef = useRef(null)
 
   useEffect(() => {
     // Function to create the WebSocket connection for the sensor
     const connectWebSocket = () => {
       // Create WebSocket connection with the sensor name
       const socket = new WebSocket(`ws://localhost:8080/readings/${sensor_name}`);
+      wsRef.current = socket;
 
       socket.onopen = () => {
         console.log(`Connected to WebSocket for sensor: ${sensor_name}`);
@@ -33,15 +34,14 @@ const SensorReadings = () => {
         console.error('WebSocket error:', error);
       };
 
-      setWs(socket); 
     };
 
     connectWebSocket();
 
     // Cleanup on component unmount
     return () => {
-      if (ws) {
-        ws.close();
+      if (wsRef.current) {
+        wsRef.current.close();
       }
     };
   }, [sensor_name]); 

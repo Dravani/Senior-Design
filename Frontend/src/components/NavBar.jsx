@@ -19,7 +19,7 @@ const NavBar = () => {
       {/* Navigation Items */}
       <div className="nav-items">
         <Link to="/sensors" className="nav-link"><FaHome className="nav-icon" title="Sensors" /></Link>
-        <Link to="/sensors" className="nav-link"><FaPlus className="nav-icon" title="Readings" /></Link>
+        <Link to="/readings" className="nav-link"><FaPlus className="nav-icon" title="Readings" /></Link>
         <Link to="/projects" className="nav-link"><FaChartBar className="nav-icon" title="Projects" /></Link>
         <Link to="/settings" className="nav-link"><FaCog className="nav-icon" title="Settings" /></Link>
       </div>
