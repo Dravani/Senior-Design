@@ -84,7 +84,7 @@ const UserSensorHub = () => {
                                             {sensorName}
                                         </Link>
                                     </td>
-                                    <td>Active</td>
+                                    <td>N/A</td>
                                     <td>N/A</td>
                                 </tr>
                             ))
