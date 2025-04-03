@@ -7,6 +7,7 @@ import SignUp from './pages/SignUp';
 import UserSensorHub from './pages/UserSensorHub';
 import UserProjectHub from './pages/UserProjectHub';
 import SensorReadings from './pages/SensorReadings';
+import ProjectPage from './pages/ProjectPage';
 import NavBar from "./components/NavBar";
 import { Outlet } from 'react-router-dom';
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<UserProjectHub />} /> {/* Default route */}
           <Route path="projects" element={<UserProjectHub />} />
+          <Route path="projects/:project_name" element={<ProjectPage />} />
           <Route path="sensors" element={<UserSensorHub />} />
           <Route path="readings/:sensor_name" element={<SensorReadings />} />
         </Route>

@@ -33,3 +33,53 @@
 .card:hover {
     box-shadow: 0px 2px 14px var(--primary-color-light);
 }
+
+.create-project-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 25vw;
+    transform: translate(-50%, -50%);
+    background: var(--background-secondary-dark);
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 25px;
+    z-index: 1000;
+}
+
+.menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-content > h2 {
+    margin: 10px 0;
+}
+
+.menu-content input {
+    /* margin: 10px 0; */
+    padding: 10px;
+    width: 275px;
+    border: white solid 1px;
+    background-color: var(--background-secondary-dark);
+    border-radius: 10px;
+}
+
+.menu-content > .project-description{
+    width: 300px;
+    height: 40px;
+    margin: 10px;
+}
+
+.menu-content button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-content button:first-of-type {
+    background: var(--primary-color);
+    color: white;
+}
