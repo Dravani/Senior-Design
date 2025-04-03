@@ -121,7 +121,7 @@ router.post('/disabled/:name/toggle', async (req, res) => {
 
     if (updateError) throw updateError;
 
-    res.status(200).json({ message: "Status updated successfully", newStatus });
+    res.status(200).json({ message: "Status updated successfully", is_disabled: newStatus });
   } catch (error) {
     console.error("Error toggling sensor status:", error);
     res.status(500).json({ error: "Error updating sensor status", details: error.message });

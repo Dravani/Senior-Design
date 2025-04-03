@@ -28,7 +28,32 @@
     margin: 5px 0;
 }
 
-/* Navigation Buttons */
+.sensor-toggle {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sensor-toggle p {
+    font-size: 18px;
+}
+
+.toggle-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.toggle-btn:hover {
+background-color: #45a049;
+}
+
 .navigation-buttons {
     display: flex;
     justify-content: center;

@@ -7,10 +7,49 @@ import './SensorReadings.css';
 const SensorReadings = () => {
   const { sensor_name } = useParams();
   const [reading, setReading] = useState(null);
+  const [sensorStatus, setSensorStatus] = useState(null);
   const wsRef = useRef(null);
 
   const navigate = useNavigate();
   const [selectedSensors, setSelectedSensors] = useState([]);
+
+  useEffect(() => {
+    const fetchSensorStatus = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/sensors/disabled/${sensor_name}`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        
+        if (data.length > 0) {
+            setSensorStatus(data[0].is_disabled);
+        }
+        else{
+            setSensorStatus(false); 
+        }
+      } catch (error) {
+        console.error("Error fetching sensor status:", error);
+      }
+    };
+    
+    fetchSensorStatus();
+  }, [sensor_name]);
+
+  // Toggle 
+  const toggleSensorStatus = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/sensors/disabled/${sensor_name}/toggle`, {
+        method: "POST",
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const result = await response.json();
+      setSensorStatus(result.is_disabled);
+    } catch (error) {
+      console.error("Error toggling sensor status:", error);
+    }
+  };
 
   // Load selected sensors from localStorage once on mount
   useEffect(() => {
@@ -95,6 +134,13 @@ const SensorReadings = () => {
                     <p>Waiting for updates...</p>
                 </div>
             )}
+
+            <div className="sensor-toggle">
+                <p><strong>Status:</strong> {sensorStatus ? "Disabled" : "Enabled"}</p>
+                <button onClick={toggleSensorStatus} className="toggle-btn">
+                {sensorStatus ? "Enable Sensor" : "Disable Sensor"}
+                </button>
+            </div>
 
             <div className="navigation-buttons">
                 {currentIndex > 0 && <button onClick={handlePrevious}>Previous Sensor</button>}
