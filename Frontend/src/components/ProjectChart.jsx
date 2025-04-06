@@ -4,7 +4,7 @@ import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
-const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime }) => {
+const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sensorType }) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -33,9 +33,17 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime }) =>
         if (!sensorName || liveMode) return;
 
         try {
-            const response = await fetch(
-                `http://localhost:3000/api/sensors/read/${sensorName}?start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}&type=${dataType}`
-            );
+            let url = "";
+            if (sensorType === "DHT") {
+                url = `http://localhost:3000/api/sensors/read/${sensorName}?start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}&type=${dataType}`;
+            } else if (sensorType === "Network") {
+                url = `http://localhost:3000/api/sensors/network/read/${sensorName}?start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}`;
+            } else {
+                console.warn("Unknown sensor type selected:", sensorType);
+                return;
+            }
+
+            const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
 
@@ -52,7 +60,17 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime }) =>
     useEffect(() => {
         if (!sensorName || !liveMode) return;
 
-        const socket = new WebSocket(`ws://localhost:8080/readings/${sensorName}`);
+        let socketUrl = "";
+        if (sensorType === "DHT") {
+            socketUrl = `ws://localhost:8080/readings/${sensorName}`;
+        } else if (sensorType === "Network") {
+            socketUrl = `ws://localhost:8080/network/${sensorName}`;
+        } else {
+            console.warn("Unknown sensor type for WebSocket:", sensorType);
+            return;
+        }
+
+        const socket = new WebSocket(socketUrl);
         wsRef.current = socket;
 
         socket.onopen = () => console.log(`Connected to WebSocket for: ${sensorName}`);
@@ -63,9 +81,16 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime }) =>
                 console.log("Live data received:", data);
 
                 setChartData((prev) => ({
-                    labels: [...prev.labels.slice(-50), ""], // Hide X-axis labels
-                    datasets: [{ ...prev.datasets[0], data: [...prev.datasets[0].data.slice(-50), data[dataType]] }],
+                    labels: [...prev.labels, ""], // Add an empty label for the new data point
+                    datasets: [{
+                        ...prev.datasets[0],
+                        data: [
+                            ...prev.datasets[0].data,
+                            sensorType === "DHT" ? data[dataType] : data["packet_length"]
+                        ]
+                    }],
                 }));
+                           
             } catch (error) {
                 console.error("Error parsing WebSocket data:", error);
             }
@@ -80,16 +105,17 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime }) =>
                 wsRef.current = null;
             }
         };
-    }, [sensorName, dataType, liveMode]);
+    }, [sensorName, dataType, liveMode, sensorType]);
 
     // Fetch static data when live mode is OFF
     useEffect(() => {
         if (!liveMode) fetchData();
-    }, [sensorName, dataType, startTime, endTime, liveMode]);
+    }, [sensorName, dataType, startTime, endTime, liveMode, sensorType]);
 
     return (
         <div>
-            <h2>{sensorName} - {liveMode ? "Live Data" : "Historical Data"} - {dataType}</h2>
+            <h2>  {sensorName} - {liveMode ? "Live Data" : "Historical Data"} 
+            {sensorType === "DHT" && ` - ${dataType}`}</h2>
             <Line data={chartData} options={options} />
         </div>
     );

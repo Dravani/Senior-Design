@@ -3,23 +3,37 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// Supabase setup
+// Supabase setup for default
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+// Supabase setup for network-specific base
+const networkBase = createClient("", "");
+
+// EDIT THIS TOO
 const setupWebSocket = (wsServer) => {
   wsServer.on("connection", (ws, req) => {
-
     const sensorName = req.url.split("/")[2];
     console.log(`New WebSocket connection for sensor: ${sensorName}`);
+
+    // Determine whether the path includes "network"
+    const isNetworkSensor = req.url.includes("network");
+
+    // Use appropriate Supabase client based on whether the request is for a network sensor
+    const currentSupabaseClient = isNetworkSensor ? networkBase : supabase;
+    const tableName = isNetworkSensor ? "Network" : "Sensor";
+    const timeName = isNetworkSensor ? "created_at" : "timestamp";
+    const columVal = isNetworkSensor ? "ip" : "sensor_name";
+    const timeCheck = isNetworkSensor ? 300 : 2000;
+
 
     // Function to send the latest sensor data
     const sendLatestReading = async () => {
       try {
-        const { data, error } = await supabase
-          .from("Sensor")
+        const { data, error } = await currentSupabaseClient
+          .from(tableName)
           .select("*")
-          .eq("sensor_name", sensorName)
-          .order("timestamp", { ascending: false })
+          .eq(columVal, sensorName)
+          .order(timeName, { ascending: false })
           .limit(1)
           .single();
 
@@ -37,7 +51,7 @@ const setupWebSocket = (wsServer) => {
     };
 
     // Send the latest reading every 2 seconds
-    const interval = setInterval(sendLatestReading, 2000);
+    const interval = setInterval(sendLatestReading, timeCheck);
 
     // Cleanup when the WebSocket is closed
     ws.on("close", () => {

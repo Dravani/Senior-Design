@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import ProjectChart from "../components/ProjectChart";
 
-
 // CSS Stylings
-import "./ProjectPage.css"
+import "./ProjectPage.css";
 
 const ProjectPage = () => {
     const { project_name } = useParams();
 
-    // Selection Options
-    const [sensors, setSensors] = useState([]); 
+    const [sensorType, setSensorType] = useState("DHT");
+    const [sensors, setSensors] = useState([]);
     const [selectedSensor, setSelectedSensor] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -23,24 +22,44 @@ const ProjectPage = () => {
     useEffect(() => {
         const fetchSensors = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/sensors/');
+                let url = "";
+    
+                // Dynamically choose the endpoint based on the sensor type
+                if (sensorType === "DHT") {
+                    url = "http://localhost:3000/api/sensors";
+                } else if (sensorType === "Network") {
+                    url = "http://localhost:3000/api/sensors/network";
+                } else {
+                    console.warn("Unknown sensor type selected:", sensorType);
+                    return;
+                }
+    
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+    
                 const json = await response.json();
-        
-                // Extract unique sensor names
-                const uniqueSensors = [...new Set(json.map(sensor => sensor.sensor_name).filter(Boolean))];
-        
-                setSensors(uniqueSensors);  // Now it's an array
+    
+                // Filter unique sensor names (and remove falsy values)
+                let uniqueSensors = [];
+                if (sensorType === "DHT") {
+                    // For DHT sensors, map by sensor_name
+                    uniqueSensors = [...new Set(json.map(sensor => sensor.sensor_name).filter(Boolean))];
+                } else if (sensorType === "Network") {
+                    // For Network sensors, map by ip
+                    uniqueSensors = [...new Set(json.map(sensor => sensor.ip).filter(Boolean))];
+                }
+    
+                setSensors(uniqueSensors);
+                setSelectedSensor(""); 
             } catch (error) {
-                console.error('Failed to fetch sensors:', error);
+                console.error("Failed to fetch sensors:", error);
             }
         };
-        
     
-            fetchSensors();
-    }, []);
+        fetchSensors();
+    }, [sensorType]);
 
     return (
         <div className="project-page">
@@ -48,6 +67,17 @@ const ProjectPage = () => {
                 <h1>{decodeURIComponent(project_name)}</h1>
                 <h2>{description}</h2>
 
+                <label htmlFor="sensor-type-select">Sensor Type:</label>
+                <select
+                    id="sensor-type-select"
+                    value={sensorType}
+                    onChange={(e) => setSensorType(e.target.value)}
+                >
+                    <option value="DHT">DHT</option>
+                    <option value="Network">Network</option>
+                </select>
+
+            
                 <label htmlFor="sensor-select">Choose a sensor:</label>
                 <select
                     id="sensor-select"
@@ -60,6 +90,7 @@ const ProjectPage = () => {
                     ))}
                 </select>
 
+            
                 <div className="time-range">
                     <label>Start Time:</label>
                     <input 
@@ -85,21 +116,27 @@ const ProjectPage = () => {
                         Live Mode
                     </label>
                 </div>
-                <div className="data-selection">
-                    <label>Select Data Type:</label>
-                    <select value={dataType} onChange={(e) => setDataType(e.target.value)}>
-                        <option value="humidity">Humidity</option>
-                        <option value="temperature">Temperature</option>
-                    </select>
-                </div>
+
+                {sensorType === "DHT" && (
+                    <div className="data-selection">
+                        <label>Select Data Type:</label>
+                        <select value={dataType} onChange={(e) => setDataType(e.target.value)}>
+                            <option value="humidity">Humidity</option>
+                            <option value="temperature">Temperature</option>
+                        </select>
+                    </div>
+                )}
+
                 {selectedSensor && startTime && (liveMode || endTime) && (
                     <div className="chart-container">
-                     <ProjectChart 
-                        sensorName={selectedSensor}
-                        dataType={dataType} 
-                        liveMode={liveMode} 
-                        startTime={startTime} 
-                        endTime={endTime} />
+                        <ProjectChart 
+                            sensorName={selectedSensor}
+                            dataType={dataType}
+                            liveMode={liveMode}
+                            startTime={startTime}
+                            endTime={endTime}
+                            sensorType={sensorType} 
+                        />
                     </div>
                 )}
             </div>
