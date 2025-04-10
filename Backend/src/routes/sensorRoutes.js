@@ -9,8 +9,6 @@ const router = express.Router();
 // Initialize Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-// CHANGE TO CURRENT
-const tempBase = createClient("", "")
 
 // GET: Fetch sensor data from Supabase
 router.get('/', async (req, res) => {
@@ -131,11 +129,11 @@ router.post('/disabled/:name/toggle', async (req, res) => {
   }
 });
 
-// TEMP GET NETWORK CHANGE TO CURRENT tempBase
+// TEMP GET NETWORK CHANGE TO CURRENT supaBase
 // GET: Fetch sensor data from Supabase
 router.get('/network', async (req, res) => {
   try {
-    const { data, error } = await tempBase.from('Network').select('*');
+    const { data, error } = await supabase.from('Network').select('*');
     if (error) throw error;
 
     res.status(200).json(data);
@@ -149,7 +147,7 @@ router.get('/network/read/:name', async (req, res) => {
     const { name } = req.params;
     const { start, end} = req.query;
     
-    let query = tempBase
+    let query = supabase
       .from('Network')
       .select(`packet_length, created_at`)
       .eq('ip', name)

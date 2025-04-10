@@ -1,4 +1,4 @@
-from scapy.all import sniff, IP, TCP, UDP, ICMP, MQTT # type: ignore
+from scapy.all import sniff, IP, TCP, UDP, ICMP # type: ignore
 import requests
 import json
 
@@ -8,7 +8,7 @@ SUPABASE_API_KEY = ''
 SUPABASE_TABLE = 'Network'
 
 # The IP address you want to filter for
-TARGET_IP = '192.168.1.161'
+TARGET_IP = ''
 
 # Protocol to sniff: change this to 'TCP', 'UDP', or 'ICMP'
 PROTOCOL = 'TCP'
@@ -17,8 +17,7 @@ PROTOCOL = 'TCP'
 PROTOCOL_MAP = {
     'TCP': (TCP, 'tcp'),
     'UDP': (UDP, 'udp'),
-    'ICMP': (ICMP, 'icmp'),
-    'MQTT': (MQTT, 'mqtt')
+    'ICMP': (ICMP, 'icmp')
 }
 
 if PROTOCOL not in PROTOCOL_MAP:

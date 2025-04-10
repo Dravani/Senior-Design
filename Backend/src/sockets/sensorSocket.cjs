@@ -6,10 +6,7 @@ dotenv.config();
 // Supabase setup for default
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-// Supabase setup for network-specific base
-const networkBase = createClient("", "");
-
-// EDIT THIS TOO
+// EDIT THIS TOO, when we have multiple sensors beyond DHT and NETWORK 
 const setupWebSocket = (wsServer) => {
   wsServer.on("connection", (ws, req) => {
     const sensorName = req.url.split("/")[2];
@@ -19,7 +16,7 @@ const setupWebSocket = (wsServer) => {
     const isNetworkSensor = req.url.includes("network");
 
     // Use appropriate Supabase client based on whether the request is for a network sensor
-    const currentSupabaseClient = isNetworkSensor ? networkBase : supabase;
+    const currentSupabaseClient = supabase;
     const tableName = isNetworkSensor ? "Network" : "Sensor";
     const timeName = isNetworkSensor ? "created_at" : "timestamp";
     const columVal = isNetworkSensor ? "ip" : "sensor_name";
