@@ -3,6 +3,7 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import cypress from 'eslint-plugin-cypress'
 
 export default [
   { ignores: ['dist'] },
@@ -33,6 +34,21 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ['**/*.cy.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.cypress,
+      },
+    },
+    env: {
+      'cypress/globals': true,
+    },
+    plugins: {
+      cypress,
     },
   },
 ]
