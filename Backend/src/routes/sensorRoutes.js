@@ -9,6 +9,7 @@ const router = express.Router();
 // Initialize Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+
 // GET: Fetch sensor data from Supabase
 router.get('/', async (req, res) => {
   try {
@@ -125,6 +126,54 @@ router.post('/disabled/:name/toggle', async (req, res) => {
   } catch (error) {
     console.error("Error toggling sensor status:", error);
     res.status(500).json({ error: "Error updating sensor status", details: error.message });
+  }
+});
+
+// TEMP GET NETWORK CHANGE TO CURRENT supaBase
+// GET: Fetch sensor data from Supabase
+router.get('/network', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('Network').select('*');
+    if (error) throw error;
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching sensor data', details: error.message });
+  }
+});
+
+router.get('/network/read/:name', async (req, res) => {
+  try {
+    const { name } = req.params;
+    const { start, end} = req.query;
+    
+    let query = supabase
+      .from('Network')
+      .select(`packet_length, created_at`)
+      .eq('ip', name)
+      .order('created_at', { ascending: true });
+
+    // Apply time filtering if both start and end times are provided
+    if (start && end) {
+      query = query.gte('created_at', start).lte('created_at', end);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    console.log("DATA: ", data)
+
+    // Format data for the frontend
+    const formattedData = {
+      labels: data.map(entry => entry.created_at), // X-axis - Timestamp
+      values: data.map(entry => entry.packet_length)   // Y-axis - Packet Length (bytes)
+    };
+
+
+    res.status(200).json(formattedData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching sensor data', details: error.message });
   }
 });
 
