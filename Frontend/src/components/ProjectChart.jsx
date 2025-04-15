@@ -23,7 +23,7 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
     const options = {
         responsive: true,
         scales: {
-            x: { ticks: { display: false }, grid: { display: false } }, // Hide X-axis labels
+            x: { ticks: { display: false }, grid: { display: false } },
             y: { ticks: { beginAtZero: true } },
         },
     };
@@ -81,7 +81,7 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
                 console.log("Live data received:", data);
 
                 setChartData((prev) => ({
-                    labels: [...prev.labels, ""], // Add an empty label for the new data point
+                    labels: [...prev.labels, ""],
                     datasets: [{
                         ...prev.datasets[0],
                         data: [
@@ -113,7 +113,7 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
     }, [sensorName, dataType, startTime, endTime, liveMode, sensorType]);
 
     return (
-        <div>
+        <div className="chart-container" style={{ width: "100%", height: "270px" }}>
             <h2>  {sensorName} - {liveMode ? "Live Data" : "Historical Data"} 
             {sensorType === "DHT" && ` - ${dataType}`}</h2>
             <Line data={chartData} options={options} />
