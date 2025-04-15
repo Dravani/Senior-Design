@@ -105,66 +105,73 @@ const ProjectPage = () => {
                             </button>
 
                             {config.showOptions && (
-                                <div className="floating-options">
-                                    <label>Sensor Type:</label>
-                                    <select
-                                        value={config.sensorType}
-                                        onChange={(e) => updateChartConfig(index, "sensorType", e.target.value)}
-                                    >
-                                        <option value="DHT">DHT</option>
-                                        <option value="Network">Network</option>
-                                    </select>
+                            <div className="floating-options">
+                                <select
+                                className="custom-select"
+                                value={config.sensorType}
+                                onChange={(e) => updateChartConfig(index, "sensorType", e.target.value)}
+                                >
+                                <option value="" disabled>Sensor Type</option>
+                                <option value="DHT">DHT</option>
+                                <option value="Network">Network</option>
+                                </select>
 
-                                    <label>Choose a sensor:</label>
-                                    <select
-                                        value={config.selectedSensor}
-                                        onChange={(e) => updateChartConfig(index, "selectedSensor", e.target.value)}
-                                    >
-                                        <option value="">-- Choose a Sensor --</option>
-                                        {config.sensors.map((sensor, i) => (
-                                            <option key={i} value={sensor}>{sensor}</option>
-                                        ))}
-                                    </select>
-
-                                    <div className="time-range">
-                                        <label>Start Time:</label>
-                                        <input
-                                            type="datetime-local"
-                                            value={config.startTime}
-                                            onChange={(e) => updateChartConfig(index, "startTime", e.target.value)}
-                                        />
-                                        <label>End Time:</label>
-                                        <input
-                                            type="datetime-local"
-                                            value={config.endTime}
-                                            disabled={config.liveMode}
-                                            onChange={(e) => updateChartConfig(index, "endTime", e.target.value)}
-                                        />
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={config.liveMode}
-                                                onChange={(e) => updateChartConfig(index, "liveMode", e.target.checked)}
-                                            />
-                                            Live Mode
-                                        </label>
-                                    </div>
-
-                                    {config.sensorType === "DHT" && (
-                                        <div className="data-selection">
-                                            <label>Data Type:</label>
-                                            <select
-                                                value={config.dataType}
-                                                onChange={(e) => updateChartConfig(index, "dataType", e.target.value)}
-                                            >
-                                                <option value="humidity">Humidity</option>
-                                                <option value="temperature">Temperature</option>
-                                            </select>
-                                        </div>
-                                    )}
+                                <select
+                                className="custom-select"
+                                value={config.selectedSensor}
+                                onChange={(e) => updateChartConfig(index, "selectedSensor", e.target.value)}
+                                >
+                                <option value="" disabled>Choose a Sensor</option>
+                                {config.sensors.map((sensor, i) => (
+                                    <option key={i} value={sensor}>{sensor}</option>
+                                ))}
+                                </select>
+                                <div className="time-range">
+                                <div className="input-group">
+                                    <label className="time-label">Start Time</label>
+                                    <input
+                                    className="custom-select"
+                                    type="datetime-local"
+                                    value={config.startTime}
+                                    onChange={(e) => updateChartConfig(index, "startTime", e.target.value)}
+                                    />
                                 </div>
-                            )}
 
+                                <div className="input-group end-time-group">
+                                    <label className="time-label">End Time</label>
+                                    <div className="end-time-row">
+                                    <input
+                                        className="custom-select"
+                                        type="datetime-local"
+                                        value={config.endTime}
+                                        disabled={config.liveMode}
+                                        onChange={(e) => updateChartConfig(index, "endTime", e.target.value)}
+                                    />
+                                    <label className="live-toggle-label">
+                                        <input
+                                        type="checkbox"
+                                        checked={config.liveMode}
+                                        onChange={(e) => updateChartConfig(index, "liveMode", e.target.checked)}
+                                        />
+                                        Live
+                                    </label>
+                                    </div>
+                                </div>
+                                </div>
+
+                                {config.sensorType === "DHT" && (
+                                <select
+                                    className="custom-select"
+                                    value={config.dataType}
+                                    onChange={(e) => updateChartConfig(index, "dataType", e.target.value)}
+                                >
+                                    <option value="" disabled>Data Type</option>
+                                    <option value="humidity">Humidity</option>
+                                    <option value="temperature">Temperature</option>
+                                </select>
+                                )}
+                            </div>
+                            )}
                             {config.selectedSensor && config.startTime && (config.liveMode || config.endTime) && (
                                 <div className="chart-container">
                                     <ProjectChart
