@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import dayjs from "dayjs";
 
 Chart.register(...registerables);
 
@@ -9,7 +10,11 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
         labels: [],
         datasets: [
             {
-                label: dataType === "humidity" ? "Humidity (%)" : "Temperature (°C)",
+                label: sensorType === "DHT"
+                    ? dataType === "humidity"
+                        ? "Humidity (%)"
+                        : "Temperature (°C)"
+                    : "Packet Length (bytes)",
                 data: [],
                 borderColor: "#39D869",
                 borderWidth: 2,
@@ -22,13 +27,70 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
 
     const options = {
         responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+            },
+            tooltip: {
+                callbacks: {
+                    title: (tooltipItems) => {
+                        const index = tooltipItems[0].dataIndex;
+                        const timestamp = chartData.labels[index];
+                        return dayjs(timestamp).format("ddd MMM D, HH:mm:ss");
+                    }
+                }
+            },
+        },
         scales: {
-            x: { ticks: { display: false }, grid: { display: false } },
-            y: { ticks: { beginAtZero: true } },
+            x: {
+                title: {
+                    display: true,
+                    text: "Time",
+                    color: "#ccc",
+                    padding: { top: 0, bottom: 20 },
+                    font: {
+                        size: 14,
+                        weight: "bold",
+                    },
+                },
+                ticks: {
+                    callback: (val, index) => {
+                        return index === 0
+                            ? "" // Don't show the long first label on the axis
+                            : "";
+                    },
+                    color: "#ccc",
+                    autoSkip: false,
+                },
+                grid: {
+                    color: "rgba(255,255,255,0.1)",
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: chartData.datasets[0].label,
+                    color: "#ccc",
+                    font: {
+                        size: 14,
+                        weight: "bold",
+                    },
+                },
+                ticks: {
+                    beginAtZero: true,
+                    color: "#ccc",
+                },
+                grid: {
+                    color: "rgba(255,255,255,0.1)",
+                },
+            },
         },
     };
 
-    // Function to fetch historical data (if not in live mode)
+    const firstTimestamp = chartData.labels[0]
+        ? dayjs(chartData.labels[0]).format("ddd MMM D, HH:mm:ss")
+        : null;
+
     const fetchData = async () => {
         if (!sensorName || liveMode) return;
 
@@ -47,16 +109,27 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
 
+            const label = sensorType === "DHT"
+                ? dataType === "humidity"
+                    ? "Humidity (%)"
+                    : "Temperature (°C)"
+                : "Packet Length (bytes)";
+
             setChartData({
-                labels: data.labels, // Timestamps (hidden)
-                datasets: [{ label: "Sensor Data", data: data.values, borderColor: "#39D869", borderWidth: 2, fill: false }],
+                labels: data.labels,
+                datasets: [{
+                    label,
+                    data: data.values,
+                    borderColor: "#39D869",
+                    borderWidth: 2,
+                    fill: false
+                }],
             });
         } catch (error) {
             console.error("Error fetching sensor data:", error);
         }
     };
 
-    // WebSocket for Live Mode
     useEffect(() => {
         if (!sensorName || !liveMode) return;
 
@@ -81,7 +154,7 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
                 console.log("Live data received:", data);
 
                 setChartData((prev) => ({
-                    labels: [...prev.labels, ""],
+                    labels: [...prev.labels, new Date().toISOString()],
                     datasets: [{
                         ...prev.datasets[0],
                         data: [
@@ -90,7 +163,6 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
                         ]
                     }],
                 }));
-                           
             } catch (error) {
                 console.error("Error parsing WebSocket data:", error);
             }
@@ -107,16 +179,29 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
         };
     }, [sensorName, dataType, liveMode, sensorType]);
 
-    // Fetch static data when live mode is OFF
     useEffect(() => {
         if (!liveMode) fetchData();
     }, [sensorName, dataType, startTime, endTime, liveMode, sensorType]);
 
     return (
         <div className="chart-container" style={{ width: "100%", height: "270px" }}>
-            <h2>  {sensorName} - {liveMode ? "Live Data" : "Historical Data"} 
-            {sensorType === "DHT" && ` - ${dataType}`}</h2>
+            <h2>
+                {sensorName} - {liveMode ? "Live Data" : "Historical Data"}
+                {sensorType === "DHT" && ` - ${dataType}`}
+            </h2>
+            {firstTimestamp && (
+                <div style={{
+                    color: "#ccc",
+                    fontSize: "0.9rem",
+                    marginTop: "4px",
+                    marginLeft: "10px",
+                }}>
+                    First Timestamp: {firstTimestamp}
+                </div>
+            )}
             <Line data={chartData} options={options} />
+            
+
         </div>
     );
 };
