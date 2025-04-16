@@ -115,7 +115,7 @@ const ProjectPage = () => {
                                 className="toggle-options-button"
                                 onClick={() => toggleChartOptions(index)}
                             >
-                                +
+                                ●●●
                             </button>
 
                             {config.showOptions && (

@@ -35,6 +35,11 @@
     color: var(--secondary-color);
 }
 
+.relative-toggle-container input[type="checkbox"] {
+    accent-color: var(--secondary-color);
+    cursor: pointer;
+}
+
 .chart-overlay-info {
     position: absolute;
     top: 10px;
