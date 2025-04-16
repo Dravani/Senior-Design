@@ -14,6 +14,7 @@ const defaultSettings = {
     liveMode: false,
     dataType: "humidity",
     showOptions: true,
+    isFullScreen: false,
 };
 
 const ProjectPage = () => {
@@ -72,6 +73,12 @@ const ProjectPage = () => {
         setChartconfigs(prev => prev.filter((_, i) => i !== index));
     };
 
+    const toggleFullscreen = (index) => {
+        const newConfigs = [...chartConfigs];
+        newConfigs[index].isFullScreen = !newConfigs[index].isFullScreen;
+        setChartconfigs(newConfigs);
+    };
+    
     useEffect(() => {
         fetchSensors(chartConfigs[0].sensorType, 0);
     }, []);
@@ -89,12 +96,19 @@ const ProjectPage = () => {
 
                 <div className="charts-grid">
                     {chartConfigs.map((config, index) => (
-                        <div className="chart-settings-box" key={index}>
+                        <div className={`chart-settings-box ${config.isFullScreen ? "fullscreen" : ""}`} key={index}>
                             <button
                                 className="remove-graph-button"
                                 onClick={() => removeChart(index)}
                             >
                                 ✕
+                            </button>
+
+                            <button
+                                className="fullscreen-button"
+                                onClick={() => toggleFullscreen(index)}
+                            >
+                                {config.isFullScreen ? "Exit" : "Full"}
                             </button>
 
                             <button
@@ -181,6 +195,7 @@ const ProjectPage = () => {
                                         startTime={config.startTime}
                                         endTime={config.endTime}
                                         sensorType={config.sensorType}
+                                        isFullScreen={config.isFullScreen}
                                     />
                                 </div>
                             )}

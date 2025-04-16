@@ -2,10 +2,19 @@ import React, { useEffect, useState, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import dayjs from "dayjs";
+import duration from 'dayjs/plugin/duration';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(duration);
+dayjs.extend(customParseFormat);
 
 Chart.register(...registerables);
 
-const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sensorType }) => {
+// CSS Stylings
+import "./ProjectChart.css"
+
+const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sensorType, isFullScreen}) => {
+    const [showOverlay, setShowOverlay] = useState(true);
+    const [relativeTimeMode, setRelativeTimeMode] = useState(true);
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -55,9 +64,26 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
                 },
                 ticks: {
                     callback: (val, index) => {
-                        return index === 0
-                            ? "" // Don't show the long first label on the axis
-                            : "";
+                        const timestamp = chartData.labels[index];
+                        if (!timestamp) return "";
+    
+                        if (isFullScreen) {
+                            if (relativeTimeMode && chartData.labels.length > 0) {
+                                const start = dayjs(chartData.labels[0]);
+                                const current = dayjs(timestamp);
+                                const diffMs = current.diff(start); // Total milliseconds
+                                const duration = dayjs.duration(diffMs);
+                    
+                                if (duration.asHours() >= 1) {
+                                    return duration.format("H:mm:ss");
+                                } else {
+                                    return duration.format("m:ss");
+                                }
+                            } else {
+                                return dayjs(timestamp).format("HH:mm:ss");
+                            }
+                        }
+                        return "";
                     },
                     color: "#ccc",
                     autoSkip: false,
@@ -86,7 +112,7 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
             },
         },
     };
-
+    
     const firstTimestamp = chartData.labels[0]
         ? dayjs(chartData.labels[0]).format("ddd MMM D, HH:mm:ss")
         : null;
@@ -183,27 +209,58 @@ const ProjectChart = ({ sensorName, dataType, liveMode, startTime, endTime, sens
         if (!liveMode) fetchData();
     }, [sensorName, dataType, startTime, endTime, liveMode, sensorType]);
 
+    const chartStyle = isFullScreen
+    ? { width: "100%", height: "100%" } // Fullscreen size
+    : { width: "100%", height: "270px" }; // Normal size
+
     return (
-        <div className="chart-container" style={{ width: "100%", height: "270px" }}>
-            <h2>
-                {sensorName} - {liveMode ? "Live Data" : "Historical Data"}
-                {sensorType === "DHT" && ` - ${dataType}`}
-            </h2>
-            {firstTimestamp && (
-                <div style={{
-                    color: "#ccc",
-                    fontSize: "0.9rem",
-                    marginTop: "4px",
-                    marginLeft: "10px",
-                }}>
-                    First Timestamp: {firstTimestamp}
-                </div>
+        <div className="chart-container" style={chartStyle}>
+            {!isFullScreen ? (
+                <>
+                    <h2>
+                        {sensorName} - {liveMode ? "Live Data" : "Historical Data"}
+                        {sensorType === "DHT" && ` - ${dataType}`}
+                    </h2>
+                    {firstTimestamp && (
+                        <div className="chart-header">
+                            First Timestamp: {firstTimestamp}
+                        </div>
+                    )}
+                </>
+                ) : (
+                <>
+                    <div className="chart-controls">
+                        <div className="relative-toggle-container" onClick={() => setRelativeTimeMode(prev => !prev)}>
+                            <input
+                                type="checkbox"
+                                checked={relativeTimeMode}
+                                onChange={() => setRelativeTimeMode(prev => !prev)}
+                            />
+                            <span>Relative Time</span>
+                        </div>
+                        <button
+                            className="overlay-toggle-button"
+                            onClick={() => setShowOverlay(prev => !prev)}
+                        >
+                            {showOverlay ? "Hide Info" : "Show Info"}
+                        </button>
+                    </div>
+
+                    {showOverlay && (
+                        <div className="chart-overlay-info">
+                            <strong>{sensorName}</strong><br />
+                            {liveMode ? "Live Data" : "Historical Data"}<br />
+                            {sensorType === "DHT" && `${dataType}`}<br />
+                            {firstTimestamp && (
+                                <span>First: {firstTimestamp}</span>
+                            )}
+                        </div>
+                    )}
+                </>
             )}
             <Line data={chartData} options={options} />
-            
-
         </div>
-    );
+    );    
 };
 
 export default ProjectChart;

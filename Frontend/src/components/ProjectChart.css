@@ -1,0 +1,71 @@
+.chart-header {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-top: 4px;
+    margin-left: 10px;
+}
+
+.chart-container > .chart-controls {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 3;
+}
+
+.overlay-toggle-button {
+    background-color: var(--background-dark);
+    color: white;
+    border: 1px solid #888;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.overlay-toggle-button:hover,
+.relative-toggle-container:hover {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.chart-overlay-info {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    border-radius: 6px;
+    z-index: 1000;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.chart-overlay-info span {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+.relative-toggle-container {
+    background-color: var(--background-dark);
+    border: 1px solid #888;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: white;
+    display: flex;
+    font-size: 12px;
+    font-weight: inherit;
+    align-items: center;
+    cursor: pointer;
+}
+
+.relative-toggle-container input {
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.relative-toggle-container span {
+    display: inline-block;
+    vertical-align: middle;
+}
