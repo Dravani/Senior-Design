@@ -5,6 +5,10 @@
     margin-left: 10px;
 }
 
+.title-chart {
+    font-size: 1rem;
+}
+
 .chart-container > .chart-controls {
     position: fixed;
     top: 60px;

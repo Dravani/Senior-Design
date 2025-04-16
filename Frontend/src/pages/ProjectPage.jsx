@@ -7,7 +7,7 @@ import "./ProjectPage.css";
 
 const defaultSettings = {
     sensorType: "DHT",
-    selectedSensor: "",
+    selectedSensors: [],
     sensors: [],
     startTime: "",
     endTime: "",
@@ -130,16 +130,21 @@ const ProjectPage = () => {
                                 <option value="Network">Network</option>
                                 </select>
 
-                                <select
-                                className="custom-select"
-                                value={config.selectedSensor}
-                                onChange={(e) => updateChartConfig(index, "selectedSensor", e.target.value)}
-                                >
-                                <option value="" disabled>Choose a Sensor</option>
-                                {config.sensors.map((sensor, i) => (
-                                    <option key={i} value={sensor}>{sensor}</option>
-                                ))}
-                                </select>
+                                <div className="sensor-checkbox-list">
+                                    {config.sensors.map((sensor, i) => (
+                                        <label key={i} className="sensor-checkbox-item">
+                                            <input
+                                                type="checkbox"
+                                                checked={config.selectedSensors.includes(sensor)}
+                                                onChange={(e) => {
+                                                    const updatedSensors = e.target.checked ? [...config.selectedSensors, sensor] : config.selectedSensors.filter(s => s !== sensor);
+                                                    updateChartConfig(index, "selectedSensors", updatedSensors);
+                                                }}
+                                            />
+                                            {sensor}
+                                        </label>    
+                                    ))}
+                                </div>
                                 <div className="time-range">
                                 <div className="input-group">
                                     <label className="time-label">Start Time</label>
@@ -186,10 +191,10 @@ const ProjectPage = () => {
                                 )}
                             </div>
                             )}
-                            {config.selectedSensor && config.startTime && (config.liveMode || config.endTime) && (
+                            {config.selectedSensors.length > 0 && config.startTime && (config.liveMode || config.endTime) && (
                                 <div className="chart-container">
                                     <ProjectChart
-                                        sensorName={config.selectedSensor}
+                                        sensorNames={config.selectedSensors}
                                         dataType={config.dataType}
                                         liveMode={config.liveMode}
                                         startTime={config.startTime}

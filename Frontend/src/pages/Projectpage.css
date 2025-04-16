@@ -198,3 +198,38 @@ body.fullscreen-mode {
     color: var(--secondary-color);
     border-color: var(--secondary-color);
 }
+
+.sensor-checkbox-list {
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: var(--background-dark);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 180px;
+    box-sizing: border-box;
+}
+
+
+.sensor-checkbox-item {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.sensor-checkbox-item:hover {
+    background-color: var(--background-secondary-dark);
+}
+
+.sensor-checkbox-item input[type="checkbox"],
+.live-toggle-label input[type="checkbox"] {
+    accent-color: var(--secondary-color);
+    cursor: pointer;
+}
