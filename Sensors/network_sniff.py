@@ -3,12 +3,12 @@ import requests
 import json
 
 # SupaBase *** CHANGE TO CURRENT 
-SUPABASE_URL = 'https://gdgybatlakiukmhhwofr.supabase.co'
-SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkZ3liYXRsYWtpdWttaGh3b2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5NDQ0NDAsImV4cCI6MjA1ODUyMDQ0MH0.T5Cyt2KUfjcp_4jUiNS65vQNGteXI0a3vUagEQSeD_I'
+SUPABASE_URL = ''
+SUPABASE_API_KEY = ''
 SUPABASE_TABLE = 'Network'
 
 # The IP address you want to filter for
-TARGET_IP = '192.168.0.91'
+TARGET_IP = ''
 
 # Protocol to sniff: change this to 'TCP', 'UDP', or 'ICMP'
 PROTOCOL = 'TCP'
