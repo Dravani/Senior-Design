@@ -39,7 +39,11 @@ const ProjectPage = () => {
         setChartconfigs(newConfigs);
 
         if (key === "sensorType") {
+            newConfigs[index][key] = value;
+            newConfigs[index].selectedSensors = [];
             fetchSensors(value, index);
+        } else {
+            newConfigs[index][key] = value;
         }
     };
 

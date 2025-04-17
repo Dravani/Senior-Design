@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { subscribeToSensor } from "../tools/SocketManager";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -24,6 +25,7 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
     const wsRef = useRef(null);
+    const chartDataRef = useRef(chartData);
     const sensorColorMapRef = useRef({});
 
     useEffect(() => {
@@ -43,6 +45,7 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
 
             const datasets = sensorNames.map((name) => ({
                 label: `${name} (${sensorType === "DHT" ? dataType : "Packet"})`,
+                sensorName: name,
                 data: [],
                 borderColor: sensorColorMapRef.current[name],
                 borderWidth: 2,
@@ -54,7 +57,10 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
         });
     }, [liveMode, JSON.stringify(sensorNames), dataType, sensorType]);
 
-
+    useEffect(() => {
+        chartDataRef.current = chartData;
+    }, [chartData]);
+    
     const options = {
         responsive: true,
         plugins: {
@@ -173,6 +179,7 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
 
                 datasets.push({
                     label: `${sensorData.sensorName} (${sensorType === "DHT" ? dataType : "Packet"})`,
+                    sensorName: sensorData.sensorName,
                     data: dataPoints,
                     timestamps: timestamps,
                     borderColor: sensorColorMapRef.current[sensorData.sensorName],
@@ -190,59 +197,33 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
     };
 
     useEffect(() => {
-        if (!sensorNames.length || !liveMode) return;
-
-        sensorNames.forEach((sensorName, sensorIndex) => {
-            const socketUrl = sensorType === "DHT"
-                ? `ws://localhost:8080/readings/${sensorName}`
-                : `ws://localhost:8080/network/${sensorName}`;
-
-            const socket = new WebSocket(socketUrl);
-            wsRef.current = wsRef.current || {};
-            wsRef.current[sensorName] = socket;
-
-            socket.onopen = () => console.log(`Connected to WebSocket: ${sensorName}`);
-            socket.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    const timestamp = new Date().toISOString();
-
-                    setChartData((prev) => {
-                        const newLabels = [...prev.labels, timestamp];
-                        const newDatasets = prev.datasets.map((dataset, index) => {
-                            const newData = [...dataset.data];
-                            const newTimestamps = [...(dataset.timestamps || [])];
-                            if (sensorNames[index] === sensorName) {
-                                newData.push(sensorType === "DHT" ? data[dataType] : data["packet_length"]);
-                                newTimestamps.push(timestamp);
-                            } else if (newData.length > 0) {
-                                newData.push(newData[newData.length - 1]); // Keep the last value
-                                newTimestamps.push(timestamp);
-                            } else {
-                                newData.push(undefined); // Or null for a gap
-                                newTimestamps.push(timestamp);
-                            }
+        if (!liveMode || !sensorNames.length) return;
+    
+        const unsubscribers = sensorNames.map(sensorName => {
+            return subscribeToSensor(sensorName, sensorType, (data) => {
+                const timestamp = new Date().toISOString();
+    
+                setChartData(prev => {
+                    const updatedLabels = [...prev.labels, timestamp];
+                    const updatedDatasets = prev.datasets.map((dataset) => {
+                        if (dataset.sensorName === sensorName) {
+                            const newData = [...dataset.data, sensorType === "DHT" ? data[dataType] : data.packet_length];
+                            const newTimestamps = [...(dataset.timestamps || []), timestamp];
                             return { ...dataset, data: newData, timestamps: newTimestamps };
-                        });
-                        return { labels: newLabels, datasets: newDatasets };
+                        }
+                        return dataset;
                     });
-
-                } catch (err) {
-                    console.error(`Error parsing WS data for ${sensorName}:`, err);
-                }
-            };
-
-            socket.onclose = () => console.log(`WebSocket closed: ${sensorName}`);
-            socket.onerror = (e) => console.error(`WebSocket error for ${sensorName}:`, e);
-
-            return () => {
-                if (wsRef.current && wsRef.current[sensorName]) {
-                    wsRef.current[sensorName].close();
-                    delete wsRef.current[sensorName];
-                }
-            };
+    
+                    return { labels: updatedLabels, datasets: updatedDatasets };
+                });
+            });
         });
-    }, [sensorNames, dataType, liveMode, sensorType]);
+    
+        return () => {
+            unsubscribers.forEach(unsub => unsub());
+        };
+    }, [liveMode, sensorNames, dataType, sensorType]);
+    
 
     useEffect(() => {
         if (!liveMode) fetchData();
