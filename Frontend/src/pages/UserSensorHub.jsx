@@ -4,23 +4,15 @@ import { Link } from "react-router-dom";
 // CSS Stylings
 import './UserSensorHub.css'
 
-// WILL EVENTUALLY MOVE TO READINGS PAGE 
 const UserSensorHub = () => {
-    // const socket = new WebSocket('ws://localhost:8080');
-
-    // socket.onmessage = (event) => {
-    //     const message = JSON.parse(event.data);
-    //     console.log('Received from backend: ', message);
-    // }
-
-    const [sensors, setSensors] =  useState(new Set());
+    const [sensors, setSensors] = useState([]);
 
     // Local Storage for sensors so we can navigate through multiple on the sensors page
     const [selectedSensors, setSelectedSensors] = useState(() => {
         return new Set(JSON.parse(localStorage.getItem("selectedSensors")) || [])
     })
 
-    // Temporary Function to Grab Whatever Sensors Exist
+    // Fetch sensor data from API
     useEffect(() => {
         const fetchSensors = async () => {
             try {
@@ -30,18 +22,15 @@ const UserSensorHub = () => {
                 }
                 const json = await response.json();
 
-                // Ensure sensor name is unique and not null
-                const uniqueSensors = new Set();
-                json.forEach(sensor => {
-                    if(sensor.sensor_name == null){
-                        return;
-                    }
-                    if (!uniqueSensors.has(sensor.sensor_name)) {
-                        uniqueSensors.add(sensor.sensor_name);
-                    }
-                });
-                
-                setSensors(uniqueSensors);
+                console.log(json)
+
+                const mappedSensors = json.map(sensor => ({
+                    name: sensor.sensor_name,
+                    isDisabled: sensor.is_disabled,
+                    duration: sensor.duration
+                }));
+
+                setSensors(mappedSensors);
             } catch (error) {
                 console.error('Failed to fetch sensors:', error);
             }
@@ -72,20 +61,20 @@ const UserSensorHub = () => {
                         <tr>
                             <th>Name</th>
                             <th>Status</th>
-                            <th>Duration</th>
+                            <th>Last Reading</th>
                         </tr>
                     </thead>  
                     <tbody>
-                        {sensors.size > 0 ? (
-                            [...sensors].map((sensorName, index) => (
+                        {sensors.length > 0 ? (
+                            sensors.map((sensor, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <Link to={`/readings/${encodeURIComponent(sensorName)}`} className="sensor-link" onClick={() => handleSensorClick(sensorName)}>
-                                            {sensorName}
+                                        <Link to={`/readings/${encodeURIComponent(sensor.name)}`} className="sensor-link" onClick={() => handleSensorClick(sensor.name)}>
+                                            {sensor.name}
                                         </Link>
                                     </td>
-                                    <td>N/A</td>
-                                    <td>N/A</td>
+                                    <td>{sensor.isDisabled ? 'Disabled' : 'Enabled'}</td>
+                                    <td>{sensor.duration}</td>
                                 </tr>
                             ))
                         ) : (
@@ -97,7 +86,6 @@ const UserSensorHub = () => {
                 </table>
             </div>
         </div>
-
     );
 }
 

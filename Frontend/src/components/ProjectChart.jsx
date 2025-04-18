@@ -19,7 +19,7 @@ const generateRandomColor = () => {
     return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
-const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime, sensorType, isFullScreen }) => {
+const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime, sensorType, isFullScreen, onDataUpdate }) => {
     const [showOverlay, setShowOverlay] = useState(true);
     const [relativeTimeMode, setRelativeTimeMode] = useState(true);
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -36,6 +36,12 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
             }
         });
     }, [JSON.stringify(sensorNames)]);
+
+    useEffect(() => {
+        if (typeof onDataUpdate === 'function') {
+            onDataUpdate(chartData);
+        }
+    }, [chartData]);
 
     useEffect(() => {
         if (!liveMode || !sensorNames.length) return;

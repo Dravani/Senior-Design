@@ -13,10 +13,58 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 // GET: Fetch sensor data from Supabase
 router.get('/', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('Sensor').select('*');
-    if (error) throw error;
+    // Get disabled sensor statuses
+    const { data: disabledData, error: disabledError } = await supabase
+      .from('DisabledSensors')
+      .select('*');
 
-    res.status(200).json(data);
+    if (disabledError) throw disabledError;
+
+    // Get the latest timestamp for each unique sensor from the Sensors table
+    const { data: latestTimestamps, error: sensorError } = await supabase
+      .from('Sensor')
+      .select('sensor_name, timestamp')
+      .order('timestamp', { ascending: false });
+
+    if (sensorError) throw sensorError;
+
+    const recentTimestamps = {};
+    for (const row of latestTimestamps) {
+      if (!recentTimestamps[row.sensor_name]) {
+        recentTimestamps[row.sensor_name] = row.timestamp;
+      }
+    }
+
+    const combinedData = disabledData.map(sensor => {
+      const lastActive = recentTimestamps[sensor.sensor_name];
+      let duration = 'N/A';
+
+      if (lastActive) {
+        const now = new Date();
+        const then = new Date(lastActive);
+        const diffMs = now - then;
+
+        const minutes = Math.floor(diffMs / 60000);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) {
+          duration = `${days} day${days > 1 ? 's' : ''} ago`;
+        } else if (hours > 0) {
+          duration = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        } else {
+          duration = `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        }
+      }
+
+      return {
+        ...sensor,
+        last_active: lastActive,
+        duration
+      };
+    });
+
+    res.status(200).json(combinedData);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching sensor data', details: error.message });
   }

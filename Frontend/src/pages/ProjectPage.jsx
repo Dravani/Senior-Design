@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import ProjectChart from "../components/ProjectChart";
+import { exportChartsToExcel } from "../tools/ExportExcel";
 
 // CSS Stylings
 import "./ProjectPage.css";
@@ -23,6 +24,7 @@ const ProjectPage = () => {
     const description = location.state?.description || "No description provided.";
     const [chartConfigs, setChartconfigs] = useState([structuredClone(defaultSettings)]);
     const [fetchedIndices, setFetchedIndices] = useState(new Set());
+    const [chartDataMap, setChartDataMap] = useState({});
 
     const addChart = () => {
         const newChart = structuredClone(defaultSettings);
@@ -46,6 +48,11 @@ const ProjectPage = () => {
             newConfigs[index][key] = value;
         }
     };
+
+    const handleDownloadAllCharts = () => {
+        exportChartsToExcel(chartConfigs, chartDataMap, project_name);
+    };
+    
 
     const fetchSensors = async (sensorType, index) => {
         try {
@@ -95,7 +102,7 @@ const ProjectPage = () => {
 
                 <div className="chart-controls">
                     <button onClick={addChart}>Add Chart</button>
-                    <button>Download</button>
+                    <button onClick={handleDownloadAllCharts}>Download</button>
                 </div>
 
                 <div className="charts-grid">
@@ -205,6 +212,9 @@ const ProjectPage = () => {
                                         endTime={config.endTime}
                                         sensorType={config.sensorType}
                                         isFullScreen={config.isFullScreen}
+                                        onDataUpdate={(data) => {
+                                            setChartDataMap(prev => ({ ...prev, [index]: data }));
+                                        }}
                                     />
                                 </div>
                             )}
