@@ -38,16 +38,16 @@ router.get('/', async (req, res) => {
     const combinedData = disabledData.map(sensor => {
       const lastActive = recentTimestamps[sensor.sensor_name];
       let duration = 'N/A';
-
+    
       if (lastActive) {
         const now = new Date();
-        const then = new Date(lastActive);
-        const diffMs = now - then;
-
-        const minutes = Math.floor(diffMs / 60000);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-
+        const then = new Date(lastActive + 'Z');
+        const diffMs = now.getTime() - then.getTime();
+    
+        const minutes = Math.floor(diffMs / (1000 * 60));
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
         if (days > 0) {
           duration = `${days} day${days > 1 ? 's' : ''} ago`;
         } else if (hours > 0) {
@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
           duration = `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
         }
       }
-
+    
       return {
         ...sensor,
         last_active: lastActive,

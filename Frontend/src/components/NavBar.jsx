@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSignOutAlt, FaHome, FaChartBar, FaCog, FaPlus } from "react-icons/fa";
 import "./NavBar.css";
+import profilePic from "../assets/profile_holder.jpg"
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const NavBar = () => {
     <div className="NavBar">
       {/* Profile Section */}
       <div className="profile-section">
-        <img src="https://via.placeholder.com/80" alt="Profile" className="profile-pic" />
+        <img src={profilePic} alt="Profile" className="profile-pic" />
         <Link to="/login" className="logout-link">
           <button className="logout-btn">
             Logout <FaSignOutAlt />

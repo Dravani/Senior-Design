@@ -29,10 +29,12 @@
 }
 
 .sensor-toggle {
-    margin-top: 30px;
+    margin: 15px auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 20px;
+    text-align: center;
 }
 
 .sensor-toggle p {
@@ -41,7 +43,7 @@
 
 .toggle-btn {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: var(--secondary-color);
     color: white;
     border: none;
     border-radius: 5px;
