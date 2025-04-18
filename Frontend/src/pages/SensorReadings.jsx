@@ -86,7 +86,7 @@ const SensorReadings = () => {
               wsRef.current = null;
           }
       };
-    }, [sensor_name]); // Runs when `sensor_name` changes
+    }, [sensor_name]);
 
     // Ensure sensor is added only once to localStorage
     useEffect(() => {
@@ -107,12 +107,14 @@ const SensorReadings = () => {
 
     const handleNext = () => {
         if (currentIndex !== -1 && currentIndex < selectedSensors.length - 1) {
+            setReading(null);
             navigate(`/readings/${encodeURIComponent(selectedSensors[currentIndex + 1])}`);
         }
     };
 
     const handlePrevious = () => {
         if (currentIndex > 0) {
+            setReading(null);
             navigate(`/readings/${encodeURIComponent(selectedSensors[currentIndex - 1])}`);
         }
     };
