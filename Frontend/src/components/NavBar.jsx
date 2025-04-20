@@ -7,6 +7,12 @@ import profilePic from "../assets/profile_holder.jpg"
 const NavBar = () => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("currentUser"); // or localStorage if you used that
+    navigate("/login");
+  };
+  
+
   const getFirstSensor = () => {
     const savedSensors = JSON.parse(localStorage.getItem("selectedSensors")) || [];
     return savedSensors.length > 0 ? savedSensors[0] : null;
@@ -52,9 +58,9 @@ const NavBar = () => {
       <div className="profile-section">
         <img src={profilePic} alt="Profile" className="profile-pic" />
         <Link to="/login" className="logout-link">
-          <button className="logout-btn">
-            Logout <FaSignOutAlt />
-          </button>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout <FaSignOutAlt />
+        </button>
         </Link>
       </div>
 
