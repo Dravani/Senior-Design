@@ -1,0 +1,97 @@
+:root {
+    --primary-color: #5089d8;
+    --secondary-color: #39d869;
+    --text-color: #ffffff;
+    --background-dark: #292929;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+  }
+  
+  .settings {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+  }
+  
+  .settings h1 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .field-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .field-row label {
+    width: 120px;
+    font-weight: 600;
+  }
+  
+  .field-row .value {
+    flex: 1;
+  }
+  
+  .field-row input[type="email"],
+  .field-row input[type="text"] {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    margin-right: 0.5rem;
+  }
+  
+  .field-row button {
+    background: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    color: #fff;
+  }
+  
+  .field-row button:hover {
+    opacity: 0.8;
+  }
+  
+  .field-row .cancel {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  
+  .notifications-row {
+    gap: 1rem;
+  }
+  
+  .notifications-row input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    transform: scale(1.5);
+  }
+  
+  .password-section {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .password-section button {
+    background: var(--primary-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    color: #fff;
+  }
+  
+  .password-section button:hover {
+    opacity: 0.8;
+  }
+  

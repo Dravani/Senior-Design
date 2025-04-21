@@ -34,5 +34,9 @@ export default [
         { allowConstantExport: true },
       ],
     },
+    env: {
+      'cypress/globals': true,
+      "node": true,
+    },
   },
 ]

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail]           = useState("");
+  const [username, setUsername]     = useState("");
+  const [password, setPassword]     = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
@@ -16,27 +16,23 @@ const SignUp = () => {
       alert("Passwords do not match!");
       return;
     }
-
     if (!email || !username || !password) {
       alert("Please fill in all fields.");
       return;
     }
-    console.log("Sending to Supabase:", {
-      username,
-      password,
-      role: "user"
-    });
+
+    console.log("Sending to Supabase:", { username, password, role: "user" });
     const { data, error } = await supabase
       .from("users")
       .insert([{ email, username, password, role: "user" }]);
 
     if (error) {
-        console.error("Signup Error:", error);
-        alert("Sign up failed: " + (error.message || "Check console for details"));
-        return;
+      console.error("Signup Error:", error);
+      alert("Sign up failed: " + (error.message || "Check console for details"));
+      return;
     } else {
       alert("Sign up successful!");
-      navigate("/login"); 
+      navigate("/login");
     }
   };
 

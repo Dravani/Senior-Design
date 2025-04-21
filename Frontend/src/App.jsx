@@ -10,6 +10,7 @@ import SensorReadings from './pages/SensorReadings';
 import ProjectPage from './pages/ProjectPage';
 import SavedCharts from './pages/SavedCharts';
 import NavBar from "./components/NavBar";
+import Settings from "./pages/Settings";
 import RequireAuth from './components/RequireAuth';
 import { Outlet } from 'react-router-dom';
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="sensors" element={<UserSensorHub />} />
           <Route path="readings/:sensor_name" element={<SensorReadings />} />
           <Route path="charts" element={<SavedCharts />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>
