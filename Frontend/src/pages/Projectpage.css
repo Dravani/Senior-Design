@@ -1,19 +1,303 @@
-h1 {
-    font-size: 2em;
-    font-weight: 600;
+body.fullscreen-mode {
+    overflow: hidden;
+}
+
+.project-page {
+    margin-right: 2em;
+}
+
+.dash-title h1,
+.dash-title h2 {
     color: var(--background-light);
 }
 
+.chart-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.charts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+
+.chart-settings-box {
+    position: relative;
+    background-color: var(--background-secondary-dark);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    min-height: 350px;
+    width: 100%;
+    max-width: 555px;
+}
+
 .chart-container {
+    flex-grow: 1;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.floating-options {
     position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: var(--background-secondary-dark);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+    max-width: 320px;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--background-secondary-dark);
+    padding: 12px;
+}
+
+.toggle-options-button,
+.remove-graph-button,
+.fullscreen-button {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.toggle-options-button {
+    top: 10px;
+    right: 10px;
+    background: var(--background-dark);
+    color: white;
+    border: 1px solid #ccc;
+}
+
+.remove-graph-button {
+    top: 10px;
+    left: 10px;
+    background: var(--background-dark);
+    color: var(--secondary-color);
+    border: 1px solid #ccc;
+    transition: all ease-in-out;
+}
+
+.remove-graph-button:hover {
+    color: #c0392b;
+    border-color: var(--secondary-color);
+}
+
+.custom-select:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+.custom-select option[disabled] {
+    color: grey;
+}
+
+.time-range {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: var(--background-dark);
+    font-size: 14px;
+}
+
+.live-toggle-label {
+    text-align: right;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.time-label {
+    font-size: 13px;
+    color: white;
+    margin: 0;
+}
+
+.end-time-row {
+    display: flex;
+}
+
+.live-toggle-label {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: var(--background-dark);
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin-left: 5px;
+    gap: 6px;
+}
+
+.live-toggle-label:hover {
+    border:1px solid var(--secondary-color);
+}
+  
+.chart-settings-box.fullscreen {
+    position: fixed;
     top: 50%;
-    left: 60%;
+    left: 50%; 
     transform: translate(-50%, -50%);
-    width: 60vw;
-    max-width: 800px;
-    padding: 20px;
+    max-width: 90vw;
+    width: 75vw;
+    height: 83vh;
+    z-index: 9999;
+    background-color: var(--background-secondary-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fullscreen-button {
+    position: absolute;
+    top: 10px;
+    right: 60px;
+    background-color: var(--background-dark);
+    color: white;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.fullscreen-button:hover,
+.toggle-options-button:hover {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.sensor-checkbox-list {
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    z-index: 1000;
+    background-color: var(--background-dark);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 180px;
+    box-sizing: border-box;
+}
+
+
+.sensor-checkbox-item {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.sensor-checkbox-item:hover {
+    background-color: var(--background-secondary-dark);
+}
+
+.sensor-checkbox-item input[type="checkbox"],
+.live-toggle-label input[type="checkbox"] {
+    accent-color: var(--secondary-color);
+    cursor: pointer;
+}
+
+/* Add new styles for saved charts section */
+.saved-charts-section {
+    margin: 20px 0;
+}
+
+.saved-charts-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.saved-charts-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.saved-chart-item {
+    background-color: var(--background-secondary-dark);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.saved-chart-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--secondary-color);
+}
+
+.project-card {
+    background-color: var(--background-secondary-dark);
+    width: 20vw; 
+    height: 20vh;
+    border-radius: 25px;
+    margin: 3em;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.project-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+    font-size: 1.4em;
+}
+
+.project-card p {
+    flex-grow: 1;
+    margin: 10px 0;
+    color: var(--background-light);
+    opacity: 0.9;
+}
+
+.project-date {
+    align-self: flex-end;
+    font-size: 0.8em;
+    color: var(--background-secondary-light);
+}
+
+.project-card:hover {
+    box-shadow: 0px 2px 14px var(--primary-color-light);
 }

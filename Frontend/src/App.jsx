@@ -8,7 +8,10 @@ import UserSensorHub from './pages/UserSensorHub';
 import UserProjectHub from './pages/UserProjectHub';
 import SensorReadings from './pages/SensorReadings';
 import ProjectPage from './pages/ProjectPage';
+import SavedCharts from './pages/SavedCharts';
 import NavBar from "./components/NavBar";
+import Settings from "./pages/Settings";
+import RequireAuth from './components/RequireAuth';
 import { Outlet } from 'react-router-dom';
 
 // Layout Component for Protected Pages
@@ -37,12 +40,14 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
 
         {/* Protected Routes (With NavBar) */}
-        <Route path="/" element={<DashboardLayout />}>
+        <Route path="/" element={<RequireAuth> <DashboardLayout /> </RequireAuth>}>
           <Route index element={<UserProjectHub />} /> {/* Default route */}
           <Route path="projects" element={<UserProjectHub />} />
           <Route path="projects/:project_name" element={<ProjectPage />} />
           <Route path="sensors" element={<UserSensorHub />} />
           <Route path="readings/:sensor_name" element={<SensorReadings />} />
+          <Route path="charts" element={<SavedCharts />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

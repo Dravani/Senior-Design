@@ -1,22 +1,84 @@
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+// Get the current file's directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Explicitly load .env from the src directory
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+// Debug output to see what's being loaded
+console.log('Environment check:');
+console.log('SUPABASE_URL:', process.env.SUPABASE_URL || 'not found');
+console.log('SUPABASE_KEY exists:', !!process.env.SUPABASE_KEY);
 
 const router = express.Router();
 
-// Initialize Supabase client
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+// Initialize Supabase client with fallback values
+const supabaseUrl = process.env.SUPABASE_URL || 'https://gdgybatlakiukmhhwofr.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkZ3liYXRsYWtpdWttaGh3b2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5NDQ0NDAsImV4cCI6MjA1ODUyMDQ0MH0.T5Cyt2KUfjcp_4jUiNS65vQNGteXI0a3vUagEQSeD_I';
 
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // GET: Fetch sensor data from Supabase
 router.get('/', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('Sensor').select('*');
-    if (error) throw error;
+    // Get disabled sensor statuses
+    const { data: disabledData, error: disabledError } = await supabase
+      .from('DisabledSensors')
+      .select('*');
 
-    res.status(200).json(data);
+    if (disabledError) throw disabledError;
+
+    // Get the latest timestamp for each unique sensor from the Sensors table
+    const { data: latestTimestamps, error: sensorError } = await supabase
+      .from('Sensor')
+      .select('sensor_name, timestamp')
+      .order('timestamp', { ascending: false });
+
+    if (sensorError) throw sensorError;
+
+    const recentTimestamps = {};
+    for (const row of latestTimestamps) {
+      if (!recentTimestamps[row.sensor_name]) {
+        recentTimestamps[row.sensor_name] = row.timestamp;
+      }
+    }
+
+    const combinedData = disabledData.map(sensor => {
+      const lastActive = recentTimestamps[sensor.sensor_name];
+      let duration = 'N/A';
+    
+      if (lastActive) {
+        const now = new Date();
+        const then = new Date(lastActive + 'Z');
+        const diffMs = now.getTime() - then.getTime();
+    
+        const minutes = Math.floor(diffMs / (1000 * 60));
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+        if (days > 0) {
+          duration = `${days} day${days > 1 ? 's' : ''} ago`;
+        } else if (hours > 0) {
+          duration = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        } else {
+          duration = `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        }
+      }
+    
+      return {
+        ...sensor,
+        last_active: lastActive,
+        duration
+      };
+    });
+
+    res.status(200).json(combinedData);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching sensor data', details: error.message });
   }

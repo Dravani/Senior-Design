@@ -36,6 +36,7 @@ export default [
     },
     env: {
       'cypress/globals': true,
+      "node": true,
     },
   },
 ]
