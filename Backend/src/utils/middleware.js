@@ -25,16 +25,18 @@ const requestLogger = responseTime((request, response, time) => {
 })
 
 const unknownEndpoint = (request, response) => {
-    logger.error("Unknown endpoint, please use a valid url")
-    return response.status(404).send({ error: "unknown endpoint" })
-}
+      logger.error("Unknown endpoint, please use a valid url");
+      return response
+        .status(404)
+        .json({ error: "unknown endpoint" });
+    };
 
-const errorHandler = (err, req, res, next) => {
-    logger.error(err.stack)
-    res.status(err.status || 500).json({
-      success: false,
-      message: err.message || "Internal server error"
-    })
-}
+    const errorHandler = (err, req, res, next) => {
+          logger.error(err.stack);
+          res.status(err.status || 500).json({
+            success: false,
+            message: err.message || "Internal server error"
+          });
+        };
 
 export { requestLogger, unknownEndpoint, errorHandler }

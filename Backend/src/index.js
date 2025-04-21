@@ -1,7 +1,14 @@
-import app from "./app.js";
-import logger from "./utils/logger.js";
-import config from "./utils/config.js";
+import app from './app.js';
+import http from 'http';
+import { WebSocketServer } from 'ws';
+import setupWebSocket from './sockets/sensorSocket.cjs';
+import config from './utils/config.js';
 
-app.listen(config.PORT, () => {
-    logger.info(`Server running on port ${config.PORT}\n`);
+const server = http.createServer(app);
+
+const wsServer = new WebSocketServer({ server });
+setupWebSocket(wsServer);
+
+server.listen(config.PORT, () => {
+  console.log(`HTTP+WebSocket server listening on port ${config.PORT}`);
 });
