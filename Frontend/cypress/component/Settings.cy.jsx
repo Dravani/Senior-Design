@@ -1,11 +1,10 @@
 import React from 'react';
 import Settings from '../../src/pages/Settings';
-import { supabase } from '../../src/lib/supabaseClient';
+import { supabase } from '../../src/supabaseClient';
 import { mount } from 'cypress/react';
 
 describe('Settings Component', () => {
   beforeEach(() => {
-    // stub sessionStorage and Supabase fetch/update
     cy.window().then(win => {
       win.sessionStorage.setItem('currentUser', JSON.stringify({ id: 'uuid-1', username: 'testuser', email: 'test@example.com' }));
     });

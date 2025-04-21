@@ -1,111 +1,89 @@
 import { mount } from "cypress/react";
-import { MemoryRouter, Router } from "react-router-dom";
-
+import { MemoryRouter } from "react-router-dom";
 import UserProjectHub from "../../src/pages/UserProjectHub";
 import "../../src/pages/UserProjectHub.css";
 
-describe('UserProjectHub Page Tests', () => {
-
-  // Test 1: Ensure the proper title and welcome message appear.
-  it('Projects Title and Welcome Message Appear', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
+describe("UserProjectHub Page Tests", () => {
+  beforeEach(() => {
+    window.sessionStorage.setItem(
+      "currentUser",
+      JSON.stringify({ username: "User" })
     );
-    cy.get('.underline').should('contain.text', 'Projects');
-    cy.contains("Welcome, User!").should('exist');
+
+    cy.intercept("GET", "http://localhost:3000/api/projects*", {
+      statusCode: 200,
+      body: [], 
+    }).as("getProjects");
   });
 
-  // Test 2: Toggle Create Project Menu by clicking the card.
-  it('shows create project menu when the card is clicked', () => {
+  const mountHub = () => {
     mount(
       <MemoryRouter>
         <UserProjectHub />
       </MemoryRouter>
     );
-    // Click the card to open the create project menu.
-    cy.get('.card').click();
-    cy.contains("Create New Project!").should('be.visible');
-    cy.get('input[placeholder="Project Name"]').should('exist');
-    cy.get('input[placeholder="Project Description"]').should('exist');
-    cy.contains("Create").should('exist');
+    cy.wait("@getProjects");
+  };
+
+  it("Projects Title and Welcome Message Appear", () => {
+    mountHub();
+    cy.get(".underline").should("contain.text", "Projects");
+    cy.contains("Welcome, User!").should("exist");
   });
 
-  // Test 3: Update Input Fields in the Create Project Menu.
-  it('updates project name and description inputs correctly', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-    cy.get('.card').click();
+  it("shows create project menu when the New‑Project card is clicked", () => {
+    mountHub();
+    cy.get(".project-cards .card").first().click();
+    cy.contains("Create New Project!").should("be.visible");
+    cy.get('input[placeholder="Project Name"]').should("exist");
+    cy.get('input[placeholder="Project Description"]').should("exist");
+    cy.contains("Create").should("exist");
+  });
+
+  it("updates project name and description inputs correctly", () => {
+    mountHub();
+    cy.get(".project-cards .card").first().click();
     cy.get('input[placeholder="Project Name"]')
-      .type('New Project')
-      .should('have.value', 'New Project');
+      .type("New Project")
+      .should("have.value", "New Project");
     cy.get('input[placeholder="Project Description"]')
-      .type('This is a test project')
-      .should('have.value', 'This is a test project');
+      .type("This is a test project")
+      .should("have.value", "This is a test project");
   });
 
-  // Test 4: Prevent Navigation When Project Name is Empty.
-  it('does nothing when Create is clicked with an empty project name', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-    cy.get('.card').click();
-    cy.get('input[placeholder="Project Description"]').type('Some description');
+  it("does nothing when Create is clicked with an empty project name", () => {
+    mountHub();
+    cy.get(".project-cards .card").first().click();
+    cy.get('input[placeholder="Project Description"]').type("Some description");
     cy.contains("Create").click();
-    cy.contains("Create New Project!").should('be.visible');
+    cy.contains("Create New Project!").should("be.visible");
   });
 
-  // Test 5: Toggle Menu Off When Clicking the Card Twice.
-  it('closes the create project menu when the card is clicked twice', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-
-    cy.get('.card').click();
-    cy.contains("Create New Project!").should('be.visible');
-    cy.get('.card').click();
-    cy.contains("Create New Project!").should('not.exist');
+  it("closes the create project menu when the card is clicked twice", () => {
+    mountHub();
+    const card = cy.get(".project-cards .card").first();
+    card.click();
+    cy.contains("Create New Project!").should("be.visible");
+    card.click();
+    cy.contains("Create New Project!").should("not.exist");
   });
 
-  // Test 6: Prevent Navigation When Project Name is Whitespace Only.
-  it('does nothing when Create is clicked with a whitespace-only project name', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-    cy.get('.card').click();
-    cy.get('input[placeholder="Project Name"]').type('   ');
-    cy.get('input[placeholder="Project Description"]').type('Some description');
+  it("does nothing when Create is clicked with a whitespace-only project name", () => {
+    mountHub();
+    cy.get(".project-cards .card").first().click();
+    cy.get('input[placeholder="Project Name"]').type("   ");
+    cy.get('input[placeholder="Project Description"]').type("Desc");
     cy.contains("Create").click();
-    cy.contains("Create New Project!").should('be.visible');
+    cy.contains("Create New Project!").should("be.visible");
   });
 
-  // Test 7: Check that the project cards container is rendered.
-  it('renders the project cards container', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-    cy.get('.project-cards').should('exist');
+  it("renders the project cards container", () => {
+    mountHub();
+    cy.get(".project-cards").should("exist");
   });
 
-  //Test 8: Verify that the card displays the expected plus sign.
-  it('displays a plus sign on the card', () => {
-    mount(
-      <MemoryRouter>
-        <UserProjectHub />
-      </MemoryRouter>
-    );
-    cy.get('.card .card-title').should('contain.text', '+');
+  it("displays a plus sign on the New‑Project card", () => {
+    mountHub();
+    cy.get(".project-cards .card .card-title").first().should("contain.text", "+");
   });
 });
