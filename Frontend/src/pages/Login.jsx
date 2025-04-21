@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { supabase } from "../supabaseClient";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState(""); 
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
@@ -14,15 +14,15 @@ const Login = () => {
       alert("Please enter both fields.");
       return;
     }
-  
+
     const { data, error } = await supabase
       .from("users")
       .select("username, password, role")
       .eq("username", username)
       .single();
 
-      console.log("Login data:", data);
-      console.log("Login error:", error); 
+    console.log("Login data:", data);
+    console.log("Login error:", error);
 
     if (error || !data || data.password !== password) {
       alert("Invalid username or password.");
@@ -37,6 +37,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-box">
         <h2>Log In</h2>
+
         <label>Username</label>
         <input
           className="EmailInput"
