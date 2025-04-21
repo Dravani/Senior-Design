@@ -99,6 +99,13 @@
     text-align: center;
 }
 
+/* Hide editing indicators */
+.chart-edit-indicator, 
+.chart-edit-badge,
+.fullscreen-edit-indicator {
+    display: none !important;
+}
+
 .fullscreen-edit-indicator {
     position: absolute;
     right: 20px;
