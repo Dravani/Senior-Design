@@ -26,6 +26,37 @@ const ProjectPage = () => {
     const [fetchedIndices, setFetchedIndices] = useState(new Set());
     const [chartDataMap, setChartDataMap] = useState({});
 
+    useEffect(() => {
+        const savedChart = localStorage.getItem('editChart');
+        if (savedChart) {
+            try {
+                const chartData = JSON.parse(savedChart);
+                if (chartData && chartData.config) {
+                    const convertedConfig = {
+                        id: chartData.id,
+                        sensorType: chartData.type || "DHT",
+                        selectedSensors: chartData.config.datasets.map(ds => ds.sensorName || "Unknown"),
+                        sensors: chartData.config.datasets.map(ds => ds.sensorName || "Unknown"),
+                        startTime: "",
+                        endTime: "",
+                        liveMode: false,
+                        dataType: chartData.type === "DHT" ? "humidity" : "packet_length",
+                        showOptions: true,
+                        isFullScreen: false,
+                        chartName: chartData.name,
+                        title: chartData.title
+                    };
+                    
+                    setChartconfigs([convertedConfig]);
+                    setChartDataMap({ 0: chartData.config });
+                    localStorage.removeItem('editChart');
+                }
+            } catch (error) {
+                console.error('Error loading saved chart:', error);
+            }
+        }
+    }, []);
+
     const addChart = () => {
         const newChart = structuredClone(defaultSettings);
         setChartconfigs((prev) => {
@@ -52,7 +83,55 @@ const ProjectPage = () => {
     const handleDownloadAllCharts = () => {
         exportChartsToExcel(chartConfigs, chartDataMap, project_name);
     };
-    
+
+    const saveChartToDatabase = async (index) => {
+        const config = chartConfigs[index];
+        const data = chartDataMap[index];
+        
+        if (!config || !data) {
+            alert("No chart data to save");
+            return;
+        }
+        
+        const chartName = prompt("Enter a name for this chart:", config.chartName || "");
+        if (!chartName) return;
+        
+        try {
+            const chartConfig = {
+                id: config.id,
+                name: chartName,
+                type: config.sensorType,
+                title: config.title || `${config.sensorType} Chart`,
+                data: data
+            };
+            
+            const url = config.id 
+                ? `http://localhost:3000/api/charts/${config.id}` 
+                : 'http://localhost:3000/api/charts';
+            
+            const method = config.id ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(chartConfig)
+            });
+            
+            if (!response.ok) throw new Error('Failed to save chart');
+            
+            const savedChart = await response.json();
+            
+            const newConfigs = [...chartConfigs];
+            newConfigs[index].id = savedChart.id;
+            newConfigs[index].chartName = chartName;
+            setChartconfigs(newConfigs);
+            
+            alert('Chart saved successfully!');
+        } catch (error) {
+            console.error('Error saving chart:', error);
+            alert(`Failed to save chart: ${error.message}`);
+        }
+    };
 
     const fetchSensors = async (sensorType, index) => {
         try {
@@ -127,6 +206,25 @@ const ProjectPage = () => {
                                 onClick={() => toggleChartOptions(index)}
                             >
                                 ●●●
+                            </button>
+                            
+                            <button
+                                className="save-chart-button"
+                                onClick={() => saveChartToDatabase(index)}
+                                style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "100px",
+                                    backgroundColor: "var(--secondary-color)",
+                                    color: "white",
+                                    padding: "6px 10px",
+                                    fontSize: "12px",
+                                    border: "none",
+                                    borderRadius: "6px",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                Save
                             </button>
 
                             {config.showOptions && (
