@@ -2,6 +2,7 @@ import express from 'express';
 import * as middleware from './utils/middleware.js';
 import sensorRoutes from './routes/sensorRoutes.js';
 import chartRoutes from './routes/chartRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { WebSocketServer } from 'ws';
@@ -31,6 +32,9 @@ app.use('/api/sensors', sensorRoutes);
 
 // Use the chart routes
 app.use('/api/charts', chartRoutes);
+
+// Use the project routes
+app.use('/api/projects', projectRoutes);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

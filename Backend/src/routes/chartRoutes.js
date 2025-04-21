@@ -19,10 +19,19 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // GET: Fetch all saved charts
 router.get('/', async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('Charts')
+    const { username } = req.query;
+    
+    let query = supabase
+      .from('newCharts')  // Using newCharts - the actual table name
       .select('*')
       .order('created_at', { ascending: false });
+      
+    // Filter by username if provided
+    if (username) {
+      query = query.eq('username', username);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     res.status(200).json(data);
@@ -34,12 +43,32 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET: Fetch charts by project_id
+router.get('/project/:projectId', async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { data, error } = await supabase
+      .from('newCharts')  // Using newCharts - the actual table name
+      .select('*')
+      .eq('project_id', projectId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Error fetching project charts', 
+      details: error.message 
+    });
+  }
+});
+
 // GET: Fetch a specific chart by ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { data, error } = await supabase
-      .from('Charts')
+      .from('newCharts')  // Using newCharts - the actual table name
       .select('*')
       .eq('id', id)
       .single();
@@ -64,18 +93,23 @@ router.post('/', async (req, res) => {
       type: req.body.type,
       title: req.body.title,
       config: req.body.data,
+      project_id: req.body.project_id,
+      username: req.body.username,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
 
+    console.log('Creating chart with data:', chartData);
+
     const { data, error } = await supabase
-      .from('Charts')
+      .from('newCharts')  // Using newCharts - the actual table name
       .insert([chartData])
       .select();
 
     if (error) throw error;
     res.status(201).json(data[0]);
   } catch (error) {
+    console.error('Error in POST /charts:', error);
     res.status(500).json({ 
       error: 'Error creating chart', 
       details: error.message 
@@ -94,8 +128,17 @@ router.put('/:id', async (req, res) => {
       updated_at: new Date().toISOString()
     };
 
+    // Only update project_id and username if provided
+    if (req.body.project_id) {
+      chartData.project_id = req.body.project_id;
+    }
+    
+    if (req.body.username) {
+      chartData.username = req.body.username;
+    }
+
     const { data, error } = await supabase
-      .from('Charts')
+      .from('newCharts')  // Using newCharts - the actual table name
       .update(chartData)
       .eq('id', id)
       .select();
@@ -117,7 +160,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { error } = await supabase
-      .from('Charts')
+      .from('newCharts')  // Using newCharts - the actual table name
       .delete()
       .eq('id', id);
 

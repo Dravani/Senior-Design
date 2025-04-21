@@ -12,10 +12,20 @@ const SavedCharts = () => {
   useEffect(() => {
     const fetchCharts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/charts');
+        // Get current user from session storage
+        const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        const username = currentUser?.username || '';
+        
+        // Fetch charts for this user if logged in
+        const url = username ? 
+          `http://localhost:3000/api/charts?username=${encodeURIComponent(username)}` : 
+          'http://localhost:3000/api/charts';
+          
+        const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
         const data = await response.json();
+        console.log('Fetched charts:', data); // Debug log
         setCharts(data);
       } catch (error) {
         console.error('Error fetching charts:', error);
@@ -28,6 +38,7 @@ const SavedCharts = () => {
   }, []);
 
   const handleChartClick = (chart) => {
+    console.log('Selected chart:', chart); // Debug log
     setSelectedChart(chart);
   };
 
@@ -57,9 +68,13 @@ const SavedCharts = () => {
 
   const handleEditChart = (chart, e) => {
     e.stopPropagation();
-    // Navigate to project page with chart data
-    localStorage.setItem('editChart', JSON.stringify(chart));
-    navigate('/projects');
+    // Store more complete information for editing
+    const editData = {
+      ...chart,
+      isEditMode: true
+    };
+    localStorage.setItem('editChart', JSON.stringify(editData));
+    navigate(`/projects/${chart.project_id}`);
   };
 
   return (
@@ -114,19 +129,22 @@ const SavedCharts = () => {
             <div className="selected-chart">
               <h2>{selectedChart.name}</h2>
               <div className="chart-container">
-                <Line 
-                  data={selectedChart.config} 
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: selectedChart.title
+                {/* Fix how we're passing chart data to the Line component */}
+                {selectedChart.config && (
+                  <Line 
+                    data={selectedChart.config}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        title: {
+                          display: true,
+                          text: selectedChart.title
+                        }
                       }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                )}
               </div>
               <div className="chart-details">
                 <p><strong>Created:</strong> {new Date(selectedChart.created_at).toLocaleString()}</p>

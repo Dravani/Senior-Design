@@ -232,3 +232,71 @@ body.fullscreen-mode {
     accent-color: var(--secondary-color);
     cursor: pointer;
 }
+
+/* Add new styles for saved charts section */
+.saved-charts-section {
+    margin: 20px 0;
+}
+
+.saved-charts-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.saved-charts-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.saved-chart-item {
+    background-color: var(--background-secondary-dark);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.saved-chart-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--secondary-color);
+}
+
+.project-card {
+    background-color: var(--background-secondary-dark);
+    width: 20vw; 
+    height: 20vh;
+    border-radius: 25px;
+    margin: 3em;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.project-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+    font-size: 1.4em;
+}
+
+.project-card p {
+    flex-grow: 1;
+    margin: 10px 0;
+    color: var(--background-light);
+    opacity: 0.9;
+}
+
+.project-date {
+    align-self: flex-end;
+    font-size: 0.8em;
+    color: var(--background-secondary-light);
+}
+
+.project-card:hover {
+    box-shadow: 0px 2px 14px var(--primary-color-light);
+}
