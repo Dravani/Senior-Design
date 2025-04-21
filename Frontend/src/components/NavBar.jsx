@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaHome, FaChartBar, FaCog, FaPlus } from "react-icons/fa";
+import { FaSignOutAlt, FaHome, FaChartBar, FaCog, FaPlus, FaSave } from "react-icons/fa";
 import "./NavBar.css";
 import profilePic from "../assets/profile_holder.jpg"
 
@@ -69,6 +69,7 @@ const NavBar = () => {
         <Link to="/sensors" className="nav-link"><FaHome className="nav-icon" title="Sensors" /></Link>
         <span onClick={handleReadingsNav}><FaPlus className="nav-icon" title="Readings" /></span>
         <Link to="/projects" className="nav-link"><FaChartBar className="nav-icon" title="Projects" /></Link>
+        <Link to="/charts" className="nav-link"><FaSave className="nav-icon" title="Saved Charts" /></Link>
         <Link to="/settings" className="nav-link"><FaCog className="nav-icon" title="Settings" /></Link>
       </div>
     </div>

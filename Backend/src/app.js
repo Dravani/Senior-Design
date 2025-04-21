@@ -2,6 +2,8 @@
 import express from 'express';
 import * as middleware from './utils/middleware.js';
 import sensorRoutes from './routes/sensorRoutes.js';
+import chartRoutes from './routes/chartRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
 import cors from 'cors';
 
 const app = express();
