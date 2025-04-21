@@ -19,8 +19,19 @@ const generateRandomColor = () => {
     return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
-const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime, sensorType, isFullScreen, onDataUpdate }) => {
-    const [showOverlay, setShowOverlay] = useState(true);
+const ProjectChart = ({ 
+    sensorNames = [], 
+    dataType, 
+    liveMode, 
+    startTime, 
+    endTime, 
+    sensorType, 
+    isFullScreen, 
+    onDataUpdate,
+    chartName,
+    isEditMode = false
+}) => {
+    const [showOverlay, setShowOverlay] = useState(false); // Change default to false to hide info
     const [relativeTimeMode, setRelativeTimeMode] = useState(true);
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
@@ -134,7 +145,13 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
     );
 
     const fetchData = async () => {
-        if (!sensorNames.length || liveMode) return;
+        if (!sensorNames.length) return;
+        
+        // Check if we have valid start and end times before fetching
+        if (!startTime || !endTime) {
+            console.log("No valid time range specified. Skipping data fetch.");
+            return;
+        }
 
         try {
             const datasets = [];
@@ -243,19 +260,27 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
         <div className="chart-container" style={chartStyle}>
             {!isFullScreen ? (
                 <>
-                    <h2 className="title-chart">
-                        {sensorNames.join(", ")} - {liveMode ? "Live" : "Historical"} Data
-                        {sensorType === "DHT" && ` - ${dataType}`}
-                    </h2>
+                    <div className="chart-title-row">
+                        <h2 className="title-chart">
+                            {chartName || `${sensorNames.join(", ")} - ${liveMode ? "Live" : "Historical"} Data${sensorType === "DHT" ? ` - ${dataType}` : ''}`}
+                        </h2>
+                        {isEditMode && (
+                            <div className="chart-edit-indicator">
+                                Editing
+                            </div>
+                        )}
+                    </div>
                     {firstTimestamps.some(ts => ts) && (
                         <div className="chart-header">
                             First Timestamps: {firstTimestamps.map((ts, index) => ts && `${sensorNames[index]}: ${ts}`).filter(Boolean).join(", ")}
                         </div>
                     )}
-                </>
-            ) : (
-                <>
-                    <div className="chart-controls">
+                    
+                    <div className="chart-line-container">
+                        <Line data={chartData} options={options} />
+                    </div>
+                    
+                    <div className="chart-bottom-controls">
                         <div className="relative-toggle-container" onClick={() => setRelativeTimeMode(prev => !prev)}>
                             <input
                                 type="checkbox"
@@ -264,6 +289,53 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
                             />
                             <span>Relative Time</span>
                         </div>
+                        
+                        <button
+                            className="overlay-toggle-button"
+                            onClick={() => setShowOverlay(prev => !prev)}
+                        >
+                            {showOverlay ? "Hide Info" : "Show Info"}
+                        </button>
+                    </div>
+                    
+                    {showOverlay && (
+                        <div className="chart-overlay-info">
+                            <strong>{sensorNames.join(", ")}</strong><br />
+                            {liveMode ? "Live Data" : "Historical Data"}<br />
+                            {sensorType === "DHT" && `${dataType}`}<br />
+                            {firstTimestamps.some(ts => ts) && (
+                                <span>First: {firstTimestamps.map((ts, index) => ts && `${sensorNames[index]}: ${ts}`).filter(Boolean).join(", ")}</span>
+                            )}
+                        </div>
+                    )}
+                </>
+            ) : (
+                <>
+                    <div className="fullscreen-chart-header">
+                        <h2 className="fullscreen-title">
+                            {chartName || `${sensorNames.join(", ")} - ${liveMode ? "Live" : "Historical"} Data${sensorType === "DHT" ? ` - ${dataType}` : ''}`}
+                        </h2>
+                        {isEditMode && (
+                            <div className="fullscreen-edit-indicator">
+                                Editing
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="chart-line-container fullscreen-chart">
+                        <Line data={chartData} options={options} />
+                    </div>
+                    
+                    <div className="fullscreen-bottom-controls">
+                        <div className="relative-toggle-container" onClick={() => setRelativeTimeMode(prev => !prev)}>
+                            <input
+                                type="checkbox"
+                                checked={relativeTimeMode}
+                                onChange={() => setRelativeTimeMode(prev => !prev)}
+                            />
+                            <span>Relative Time</span>
+                        </div>
+                        
                         <button
                             className="overlay-toggle-button"
                             onClick={() => setShowOverlay(prev => !prev)}
@@ -284,7 +356,6 @@ const ProjectChart = ({ sensorNames = [], dataType, liveMode, startTime, endTime
                     )}
                 </>
             )}
-            <Line data={chartData} options={options} />
         </div>
     );
 };

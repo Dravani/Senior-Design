@@ -8,6 +8,7 @@ import UserSensorHub from './pages/UserSensorHub';
 import UserProjectHub from './pages/UserProjectHub';
 import SensorReadings from './pages/SensorReadings';
 import ProjectPage from './pages/ProjectPage';
+import SavedCharts from './pages/SavedCharts';
 import NavBar from "./components/NavBar";
 import Settings from "./pages/Settings";
 import RequireAuth from './components/RequireAuth';
@@ -45,6 +46,7 @@ function App() {
           <Route path="projects/:project_name" element={<ProjectPage />} />
           <Route path="sensors" element={<UserSensorHub />} />
           <Route path="readings/:sensor_name" element={<SensorReadings />} />
+          <Route path="charts" element={<SavedCharts />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
